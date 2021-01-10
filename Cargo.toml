@@ -28,3 +28,4 @@ indradb-lib = "1"
 rust-embed = { version = "5.7.0", features = ["debug-embed", "compression"] }
 num_cpus = "1.13.0"
 strum = { version = "0.20", features = ["derive", "strum_macros"] }
+syn = "=1.0.57"
