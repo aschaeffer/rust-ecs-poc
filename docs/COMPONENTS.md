@@ -5,8 +5,8 @@ What is a `Component`?
 A `Component` is a set of `Properties` that:
 
 * fulfills a specific purpose,
-* can be applied to different `Entity Types`
-  * (A `Component` is reusable by and useful for multiple `Entity Types`)
+* can be applied to different `Entity Types` and/or `Relation Types`
+  * (A `Component` is reusable by and useful for multiple `Entity Types` and/or `Relation Types`)
 * and, optionally, specifies a behaviour
 
 ![Component](https://yuml.me/diagram/scruffy/class/[Component{bg:green}|uuid;name]++1-N>[Property%20Type|uuid;name;datatype])
