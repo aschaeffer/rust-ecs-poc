@@ -1,0 +1,8 @@
+{
+  "name": "divide",
+  "components": [
+    "numeric_operation_2_1"
+  ],
+  "properties": [
+  ]
+}

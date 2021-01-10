@@ -1,0 +1,8 @@
+{
+  "name": "lower_than",
+  "components": [
+    "compare_numbers"
+  ],
+  "properties": [
+  ]
+}

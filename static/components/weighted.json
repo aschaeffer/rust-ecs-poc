@@ -1,0 +1,9 @@
+{
+  "name": "weighted",
+  "properties": [
+    {
+      "name": "weight",
+      "data_type": "number"
+    }
+  ]
+}

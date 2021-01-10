@@ -1,0 +1,9 @@
+{
+  "name": "named",
+  "properties": [
+    {
+      "name": "name",
+      "data_type": "string"
+    }
+  ]
+}

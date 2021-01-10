@@ -1,0 +1,10 @@
+{
+  "name": "window",
+  "components": [
+    "named",
+    "positionable",
+    "movable"
+  ],
+  "properties": [
+  ]
+}

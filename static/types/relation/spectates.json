@@ -1,0 +1,9 @@
+{
+  "name": "spectates",
+  "outbound_type": "player",
+  "inbound_type": "player",
+  "components": [
+  ],
+  "properties": [
+  ]
+}

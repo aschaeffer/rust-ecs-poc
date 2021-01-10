@@ -1,0 +1,10 @@
+{
+  "name": "player",
+  "components": [
+    "named",
+    "positionable",
+    "movable"
+  ],
+  "properties": [
+  ]
+}

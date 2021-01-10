@@ -1,0 +1,9 @@
+{
+  "name": "looksThrough",
+  "outbound_type": "player",
+  "inbound_type": "camera",
+  "components": [
+  ],
+  "properties": [
+  ]
+}

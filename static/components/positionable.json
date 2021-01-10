@@ -1,0 +1,17 @@
+{
+  "name": "positionable",
+  "properties": [
+    {
+      "name": "px",
+      "data_type": "f64"
+    },
+    {
+      "name": "py",
+      "data_type": "f64"
+    },
+    {
+      "name": "pz",
+      "data_type": "f64"
+    }
+  ]
+}

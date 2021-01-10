@@ -1,0 +1,8 @@
+{
+  "name": "equals_number",
+  "components": [
+    "compare_numbers"
+  ],
+  "properties": [
+  ]
+}

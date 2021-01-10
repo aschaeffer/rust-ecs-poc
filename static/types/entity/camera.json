@@ -1,0 +1,10 @@
+{
+  "name": "camera",
+  "components": [
+    "named",
+    "positionable",
+    "movable"
+  ],
+  "properties": [
+  ]
+}

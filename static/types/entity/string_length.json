@@ -1,0 +1,15 @@
+{
+  "name": "string_length",
+  "components": [
+  ],
+  "properties": [
+    {
+      "name": "string",
+      "data_type": "string"
+    },
+    {
+      "name": "length",
+      "data_type": "number"
+    }
+  ]
+}

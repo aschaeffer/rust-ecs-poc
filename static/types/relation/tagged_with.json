@@ -1,0 +1,10 @@
+{
+  "name": "tagged_with",
+  "outbound_type": "*",
+  "inbound_type": "tag",
+  "components": [
+    "weighted"
+  ],
+  "properties": [
+  ]
+}

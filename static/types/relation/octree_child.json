@@ -1,0 +1,9 @@
+{
+  "name": "octree_child",
+  "outbound_type": "octree_node",
+  "inbound_type": "octree_node",
+  "components": [
+  ],
+  "properties": [
+  ]
+}

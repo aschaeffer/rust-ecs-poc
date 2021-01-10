@@ -1,0 +1,17 @@
+{
+  "name": "movable",
+  "properties": [
+    {
+      "name": "vx",
+      "data_type": "f64"
+    },
+    {
+      "name": "vy",
+      "data_type": "f64"
+    },
+    {
+      "name": "vz",
+      "data_type": "f64"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "name": "commented_with",
+  "outbound_type": "*",
+  "inbound_type": "comment",
+  "components": [
+  ],
+  "properties": [
+  ]
+}

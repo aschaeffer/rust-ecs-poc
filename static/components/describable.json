@@ -1,0 +1,9 @@
+{
+  "name": "describable",
+  "properties": [
+    {
+      "name": "description",
+      "data_type": "string"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "xor_3",
+  "components": [
+    "logical_gate_input_1",
+    "logical_gate_input_2",
+    "logical_gate_input_3",
+    "logical_gate_result_1"
+  ],
+  "properties": [
+  ]
+}

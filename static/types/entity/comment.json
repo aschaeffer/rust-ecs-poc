@@ -1,0 +1,12 @@
+{
+  "name": "comment",
+  "components": [
+    "positionable"
+  ],
+  "properties": [
+    {
+      "name": "comment",
+      "data_type": "string"
+    }
+  ]
+}
