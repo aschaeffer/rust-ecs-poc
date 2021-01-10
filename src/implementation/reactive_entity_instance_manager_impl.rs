@@ -1,5 +1,10 @@
-use crate::api::{EntityTypeManager, ComponentManager, ReactiveEntityInstanceManager, ReactivePropertyInstanceManager};
-use crate::api::GraphDatabase;
+use crate::api::{
+    EntityTypeManager,
+    ComponentManager,
+    GraphDatabase,
+    ReactiveEntityInstanceManager,
+    ReactivePropertyInstanceManager
+};
 use async_trait::async_trait;
 use waiter_di::*;
 use std::sync::RwLock;
