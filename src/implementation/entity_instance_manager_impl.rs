@@ -6,6 +6,10 @@ use crate::api::{
 };
 use crate::model::EntityInstance;
 use async_trait::async_trait;
+use indradb::{
+    Transaction,
+    SpecificVertexQuery
+};
 use serde_json::Value;
 use std::collections::hash_map::RandomState;
 use std::collections::HashMap;
@@ -33,11 +37,9 @@ impl EntityInstanceManager for EntityInstanceManagerImpl {
         let r_transaction = self.graph_database.get_transaction();
         if r_transaction.is_ok() {
             let transaction = r_transaction.unwrap();
-            // transaction.get
-            // let type_camera = Type::new("camera").unwrap();
-            // transaction.c
+            let result = transaction.get_vertices(SpecificVertexQuery::single(id));
+            result.into_ok().len() > 0
         }
-        // graph_database.
         false
     }
 
