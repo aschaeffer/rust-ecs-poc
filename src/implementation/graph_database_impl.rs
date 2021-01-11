@@ -20,13 +20,8 @@ pub struct GraphDatabaseImpl {
 #[provides]
 impl GraphDatabase for GraphDatabaseImpl {
 
-    fn get_transaction(&mut self) -> indradb::Result<indradb::MemoryTransaction> {
+    fn get_transaction(&self) -> indradb::Result<indradb::MemoryTransaction> {
         self.datastore.0.transaction()
     }
-
-    // fn x () -> indradb::Result<indradb::Trans> {
-    //     let datastore = MemoryDatastore::default();
-    //     datastore.transaction()
-    // }
 
 }
