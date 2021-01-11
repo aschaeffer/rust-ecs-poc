@@ -59,8 +59,7 @@ impl ReactivePropertyInstance<'_> {
 
     pub fn set(&self, value: Value) {
         let mut writer = self.value.write().unwrap();
-        let mut v = writer.take();
-        *v = value.clone();
+        *writer.deref_mut() = value.clone();
         self.stream.read().unwrap().send(&value);
     }
 
