@@ -48,7 +48,7 @@ impl EntityTypeManager for EntityTypeManagerImpl {
             }
         }
         self.entity_types.0.write().unwrap().push(entity_type);
-        // let result = self.graph_database.get_transaction();
+        let result = self.graph_database.get_transaction();
         // if result.is_ok() {
         //     let transaction = result.unwrap();
         //     let type_camera = Type::new("camera").unwrap();
