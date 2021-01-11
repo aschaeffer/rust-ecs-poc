@@ -71,8 +71,7 @@ impl ReactivePropertyInstance<'_> {
 
     // Resend the last value
     pub fn tick(&self) {
-        let mut reader = self.value.read().unwrap();
-        let value = reader.deref().clone();
+        let value = self.value.read().unwrap().deref().clone();
         self.stream.read().unwrap().send(&value);
     }
 
