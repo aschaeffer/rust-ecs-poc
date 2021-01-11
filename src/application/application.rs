@@ -13,6 +13,7 @@ pub trait Application {
 pub struct ApplicationImpl {
     component_manager: Wrc<dyn ComponentManager>,
     entity_type_manager: Wrc<dyn EntityTypeManager>,
+    entity_instance_manager: Wrc<dyn EntityInstanceManager>,
     system_constants_initializer: Wrc<dyn SystemConstantsInitializer>,
     graph_database: Wrc<dyn GraphDatabase>,
 }
