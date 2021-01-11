@@ -17,7 +17,7 @@ pub struct ReactiveEntityInstance<'a> {
 
 impl ReactiveEntityInstance<'_> {
 
-    pub fn from (mut properties: VertexProperties) -> ReactiveEntityInstance<'static> {
+    pub fn from (properties: VertexProperties) -> ReactiveEntityInstance<'static> {
         let type_name = properties.vertex.t.0.clone();
         let id = properties.vertex.id.clone();
         let properties = properties.props
