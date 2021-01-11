@@ -1,39 +1,37 @@
 use crate::model::ReactivePropertyInstance;
 use bidule::Stream;
 use serde_json::Value;
-// use std::sync::RwLock;
-// use uuid::Uuid;
 
-pub struct Connector<'b> {
+pub struct Connector<'a, 'b, 'c> {
 
     // Connector uuid
     // pub id: Uuid,
 
+    pub inbound: ReactivePropertyInstance<'a>,
+
     pub connection: Stream<'b, Value>,
 
-    pub inbound: ReactivePropertyInstance<'b>,
-    pub outbound: ReactivePropertyInstance<'b>,
+    pub outbound: ReactivePropertyInstance<'c>,
 
 }
 
-impl Connector<'_> {
+impl Connector<'_, '_, '_> {
 
-    fn new(inbound: ReactivePropertyInstance, outbound: ReactivePropertyInstance) -> Connector<'static> {
+    fn new(inbound: ReactivePropertyInstance<'static>, outbound: ReactivePropertyInstance<'static>) -> Connector<'static, 'static, 'static> {
         let connection = Stream::new();
         let connector = Connector {
             connection,
             inbound,
             outbound
         };
-        outbound.observe(move |sig| {
-            inbound.send(sig);
-        });
+        //
+        // outbound.stream.read().unwrap().observe(move |value| {
+        //     inbound.stream.read().unwrap().send(value);
+        // });
+        connector
 
-        connector.inbound.stream.write().unwrap().send(value)
+        // connector.inbound.stream.write().unwrap().send(value);
         // TODO: connector
     }
 
-    fn connect () {
-
-    }
 }
