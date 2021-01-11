@@ -3,7 +3,7 @@ use bidule::Stream;
 use serde_json::Value;
 use std::sync::RwLock;
 use uuid::Uuid;
-use std::ops::Deref;
+use std::ops::{Deref, DerefMut};
 
 // This is not automatically persisted to graph database (yet)!
 pub struct ReactivePropertyInstance<'a> {
