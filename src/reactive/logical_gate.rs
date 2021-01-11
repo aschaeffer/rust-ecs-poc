@@ -1,9 +1,11 @@
 use bidule::Stream;
-// use serde_json::{Value,json};
-use crate::model::ReactiveEntityInstance;
+use serde_json::{Value,json};
+use crate::model::{ReactiveEntityInstance, ReactivePropertyInstance};
 use std::sync::RwLock;
 use crate::reactive::{OperatorPosition, Expression};
 use indradb::VertexProperties;
+
+type BinaryOperation = fn(bool, bool) -> bool;
 
 // Generic implementation of an expression(LHS,RHS) using reactive streams
 pub struct LogicalGate<'a> {
@@ -12,15 +14,15 @@ pub struct LogicalGate<'a> {
 
     pub rhs: RwLock<Stream<'a, (OperatorPosition, bool)>>,
 
+    pub f: BinaryOperation,
+
+    pub internal_result: RwLock<Stream<'a, bool>>,
+
 }
 
 impl LogicalGate<'_> {
 
-    fn new(e: ReactiveEntityInstance, f: F) -> LogicalGate<'static> {
-        // let bit_1 = e.properties.get("bit_1").unwrap();
-        // let bit_2 = e.properties.get("bit_2").unwrap();
-        // let bit_3 = e.properties.get("bit_3").unwrap();
-        // result_1.get();
+    fn new<'a>(e: ReactiveEntityInstance<'static>, f: BinaryOperation) -> LogicalGate<'static> {
 
         let lhs = e.properties
             .get("bit_1")
@@ -45,54 +47,60 @@ impl LogicalGate<'_> {
                 }
             });
 
-        // let expression_b = lhs.merge(&rhs);
-        // expression_b.observe(| (o, v) | println!("[{:?} {}] => expression", o, v));
-
         let expression = lhs.merge(&rhs)
             .fold(
                 Expression::new(false, false),
                 | old_state, (o, value) | {
-                    // println!("expression [{:?} {}]", o, value);
                     match *o {
                         OperatorPosition::LHS => {
                             old_state.lhs(*value)
-                            // Expression::new(*value, old_state.rhs)
-                            // Expression { lhs: *value, rhs: old_state.rhs }
                         },
                         OperatorPosition::RHS => {
                             old_state.rhs(*value)
-                            // Expression::new(old_state.lhs, *value)
-                            // Expression { lhs: old_state.lhs, rhs: *value }
                         }
                     }
                 }
             );
-        let result = expression.map(f);
-        result.observe(| v | {
-            result.send(v);
-        });
 
-        let result_1 = e.properties.get("result_1").unwrap();
+        // The internal result
+        let internal_result = expression.map(move | e | f(e.lhs, e.rhs));
 
-        // let result_1 = expression.map(move | e | e.lhs && e.rhs);
-        LogicalGate {
+        let logical_gate = LogicalGate {
             lhs: RwLock::new(lhs),
             rhs: RwLock::new(rhs),
-        }
+            f,
+            internal_result: RwLock::new(internal_result),
+        };
 
+        // Connect the internal result with the stream of the result property
+        logical_gate.internal_result
+            .read()
+            .unwrap()
+            .observe(move | v | {
+                e.properties.get("result_1")
+                    .unwrap()
+                    .stream
+                    .read()
+                    .unwrap()
+                    .send(&json!(*v));
+                // result_1.send(&json!(*v));
+            });
+
+        logical_gate
     }
 
 }
 
 struct AndGate {}
-impl AndGate<'_> {
+impl AndGate {
 
     pub fn from_vertex_properties(v: VertexProperties) -> LogicalGate<'static> {
         AndGate::from_entity_instance(ReactiveEntityInstance::from(v))
     }
 
-    pub fn from_entity_instance(e: ReactiveEntityInstance) -> LogicalGate<'static> {
-        LogicalGate::new(e, |e| e.lhs && e.rhs)
+    pub fn from_entity_instance(e: ReactiveEntityInstance<'static>) -> LogicalGate<'static> {
+        let mut and: BinaryOperation = |lhs, rhs | lhs && rhs;
+        LogicalGate::new(e, and)
     }
 
 }
