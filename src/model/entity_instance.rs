@@ -22,7 +22,16 @@ pub struct EntityInstance {
 
 impl EntityInstance {
 
-    pub fn from (properties: VertexProperties) -> EntityInstance {
+    pub fn new (type_name: String, id: Uuid, properties: HashMap<String, Value>) -> EntityInstance {
+        EntityInstance {
+            type_name,
+            id,
+            description: String::from(""),
+            properties
+        }
+    }
+
+    pub fn from_vertex_properties (properties: VertexProperties) -> EntityInstance {
         let type_name = properties.vertex.t.0.clone();
         let id = properties.vertex.id.clone();
         let properties: HashMap<String, Value> = properties.props
