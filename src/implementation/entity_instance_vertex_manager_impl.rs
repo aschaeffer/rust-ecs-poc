@@ -1,12 +1,7 @@
-use crate::api::{
-    EntityInstanceVertexManager,
-    GraphDatabase,
-    ComponentManager,
-    EntityTypeManager
-};
+use crate::api::{EntityInstanceVertexManager, GraphDatabase, ComponentManager, EntityTypeManager, EntityInstanceVertexCreationError};
 use crate::model::EntityInstance;
 use async_trait::async_trait;
-use indradb::{Transaction, SpecificVertexQuery, Vertex, VertexProperties};
+use indradb::{Transaction, SpecificVertexQuery, Vertex, VertexProperties, VertexQueryExt};
 use serde_json::Value;
 use std::collections::hash_map::RandomState;
 use std::collections::HashMap;
@@ -68,15 +63,61 @@ impl EntityInstanceVertexManager for EntityInstanceVertexManagerImpl {
         None
     }
 
-    fn create(&self, type_name: String, properties: HashMap<String, Value, RandomState>) -> Option<Uuid> {
-        unimplemented!()
+    fn create(&self, type_name: String, properties: HashMap<String, Value>) -> Result<Uuid, EntityInstanceVertexCreationError> {
+        let r_transaction = self.graph_database.get_transaction();
+        if r_transaction.is_ok() {
+            let transaction = r_transaction.unwrap();
+            if self.entity_type_manager.has(type_name.clone()) {
+                let entity_type = self.entity_type_manager.get(type_name).unwrap();
+                let result = transaction.create_vertex_from_type(entity_type.t);
+                if result.is_ok() {
+                    let id = result.unwrap();
+                    let q = SpecificVertexQuery::single(id);
+                    for (property_name, value) in properties {
+                        let property_result = transaction.set_vertex_properties(q.clone().property(property_name), &value);
+                        if !property_result.is_ok() {
+                            return Err(EntityInstanceVertexCreationError.into());
+                        }
+                    }
+                    return Ok(id);
+                }
+            }
+        }
+        Err(EntityInstanceVertexCreationError.into())
     }
 
-    fn create_with_id(&self, type_name: String, id: Uuid, properties: HashMap<String, Value>) -> Option<Uuid> {
-        unimplemented!()
+    fn create_with_id(&self, type_name: String, id: Uuid, properties: HashMap<String, Value>) -> Result<Uuid, EntityInstanceVertexCreationError> {
+        if !self.has(id) {
+            let r_transaction = self.graph_database.get_transaction();
+            if r_transaction.is_ok() {
+                let transaction = r_transaction.unwrap();
+                if self.entity_type_manager.has(type_name.clone()) {
+                    let entity_type = self.entity_type_manager.get(type_name).unwrap();
+                    let result = transaction.create_vertex(&Vertex::with_id(id, entity_type.t));
+                    if result.is_ok() {
+                        let q = SpecificVertexQuery::single(id);
+                        for (property_name, value) in properties {
+                            let property_result = transaction.set_vertex_properties(q.clone().property(property_name), &value);
+                            if !property_result.is_ok() {
+                                return Err(EntityInstanceVertexCreationError.into());
+                            }
+                        }
+                        return Ok(id);
+                    }
+                }
+            }
+        }
+        Err(EntityInstanceVertexCreationError.into())
     }
 
     fn delete(&self, id: Uuid) {
-        unimplemented!()
+        if self.has(id) {
+            let r_transaction = self.graph_database.get_transaction();
+            if r_transaction.is_ok() {
+                let transaction = r_transaction.unwrap();
+                transaction.delete_vertices(SpecificVertexQuery::single(id));
+            }
+        }
     }
+
 }

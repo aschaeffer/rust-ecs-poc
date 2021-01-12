@@ -153,30 +153,27 @@ essential ones.
   - [x] Delete Entity Type By Name
   - [x] Export Entity Type To JSON File
   - [x] Import Entity Type From JSON File
-- [ ] `EntityInstanceVertexManager`
+- [x] `EntityInstanceVertexManager`
   - [x] Has Vertex by UUID
   - [x] Get Vertex by UUID
   - [x] Get Vertex Properties by UUID
-  - [ ] Create Vertex
-  - [ ] Create Vertex with UUID
-    - [ ] Check if id exists in Datastore (must not exist)
-  - [ ] Delete Vertex
-- [ ] `EntityInstanceManager`
-  - [ ] Has Entity Instance by UUID
-  - [ ] Get Entity Instance by UUID
-  - [ ] Create Entity Instance
-    - [ ] Parameter: type, properties
-  - [ ] Create Entity Instance
-    - [ ] Parameter: type, properties
-  - [ ] Delete Entity Instance By Id
-    - [ ] Parameter: id
-  - [ ] Import EntityInstance from JSON
-    - [ ] Check if id exists in Datastore (must not exist)
-    - [ ] Check if id exists in HashMap (must not exist)
-    - [ ] Create Vertex with id
-    - [ ] Create Vertex Properties
-  - [ ] Export EntityInstance to JSON
-    - [ ] Create EntityInstance from Vertex
+  - [x] Create Vertex
+  - [x] Create Vertex with UUID
+    - [x] Check if id exists in Datastore (must not exist)
+    - [x] Create Vertex Properties
+  - [x] Delete Vertex
+- [x] `EntityInstanceManager`
+  - [x] Has Entity Instance by UUID
+  - [x] Get Entity Instance by UUID
+  - [x] Create Entity Instance
+  - [x] Create Entity Instance with UUID
+  - [x] Delete Entity Instance By UUID
+  - [x] Import EntityInstance from JSON
+    - [x] Check if id exists in Graph Database (must not exist)
+    - [x] Create Vertex
+  - [x] Export EntityInstance to JSON
+    - [x] Create EntityInstance from Vertex
 - [ ] Reactive Entity Instance Manager
   - [x] Hold references of "ReactiveEntityInstance"
     * These are the actually "running" / "living" instances
+  - [ ] Check if id exists in HashMap (must not exist)
