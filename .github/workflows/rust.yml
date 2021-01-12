@@ -1,4 +1,4 @@
-name: Rust
+name: Inexor Reactive Semantic Entity Component System
 
 on:
   push:
