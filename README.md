@@ -2,7 +2,7 @@
 
 [<img src="https://img.shields.io/badge/Language-Rust-brightgreen">]()
 [<img src="https://img.shields.io/badge/Platforms-Linux%20%26%20Windows-brightgreen">]()
-[<img src="https://img.shields.io/github/workflow/status/aschaeffer/rust-ecs-poc/Inexor%20Reactive%20Semantic%20Entity%20Component%20System">](https://github.com/aschaeffer/rust-ecs-poc/actions?query=workflow%3ARust)
+[<img src="https://img.shields.io/github/workflow/status/aschaeffer/rust-ecs-poc/Inexor%20Reactive%20Semantic%20Entity%20Component%20System">](https://github.com/aschaeffer/rust-ecs-poc/actions?query=workflow%3AInexor%20Reactive%20Semantic%20Entity%20Component%20System)
 [<img src="https://img.shields.io/github/license/aschaeffer/rust-ecs-poc">](https://github.com/aschaeffer/rust-ecs-poc/blob/main/LICENSE)
 [<img src="https://img.shields.io/discord/698219248954376256?logo=discord">](https://discord.com/invite/acUW8k7)
 
