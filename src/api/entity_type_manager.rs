@@ -16,4 +16,7 @@ pub trait EntityTypeManager : Send + Sync {
     fn create(&self, name: String, components: Vec<String>, properties: Vec<PropertyType>);
     fn delete(&self, name: String);
 
+    fn import(&self, path: String);
+    fn export(&self, name: String, path: String);
+
 }

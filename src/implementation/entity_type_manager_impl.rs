@@ -6,6 +6,8 @@ use indradb::Type;
 use rust_embed::RustEmbed;
 use waiter_di::*;
 use std::sync::RwLock;
+use std::fs::File;
+use std::io::BufReader;
 
 #[derive(RustEmbed)]
 #[folder = "static/types/entity"]
@@ -111,4 +113,40 @@ impl EntityTypeManager for EntityTypeManagerImpl {
             .unwrap()
             .retain(| entity_type | entity_type.name != name);
     }
+
+    fn import(&self, path: String) {
+        let file = File::open(path);
+        if file.is_ok() {
+            let file = file.unwrap();
+            let reader = BufReader::new(file);
+            let entity_type = serde_json::from_reader(reader);
+            if entity_type.is_ok() {
+                self.register(entity_type.unwrap());
+            }
+        }
+    }
+
+    fn export(&self, name: String, path: String) {
+        let o_entity_type = self.get(name.clone());
+        if o_entity_type.is_some() {
+            let r_file = File::create(path.clone());
+            match r_file {
+                Ok(file) => {
+                    let result = serde_json::to_writer_pretty(
+                        &file,
+                        &o_entity_type.unwrap()
+                    );
+                    if result.is_err() {
+                        println!("Failed to export entity type {} to {}: {}",
+                                 name, path, result.err().unwrap());
+                    }
+                },
+                Err(error) => {
+                    println!("Failed to export entity type {} to {}: {}",
+                             name, path, error.to_string());
+                }
+            }
+        }
+    }
+
 }
