@@ -116,11 +116,13 @@ impl ComponentManager for ComponentManagerImpl {
                         &o_component.unwrap()
                     );
                     if result.is_err() {
-                        println!("Failed to export component {} to {}: {}", name, path, result.err().unwrap());
+                        println!("Failed to export component {} to {}: {}",
+                                 name, path, result.err().unwrap());
                     }
                 },
                 Err(error) => {
-                    println!("Failed to export component {} to {}: {}", name, path, error.to_string());
+                    println!("Failed to export component {} to {}: {}",
+                             name, path, error.to_string());
                 }
             }
         }
