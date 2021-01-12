@@ -99,7 +99,24 @@ essential ones.
 - [x] `Component`
 - [x] `EntityType`
 - [x] `EntityInstance`
-- [ ] `ReactiveEntityInstance` (Running/Living instances)
+- [ ] `ReactiveEntityInstance`
+  - [x] Not serializable
+  - [x] Running / Living instances
+  - [ ] Construct ReactiveEntityInstance from Vertex
+  - [ ] Check if id exists in Datastore
+  - [ ] Check if id exists in HashMap
+  - [ ] Get EntityType from Vertex Type
+  - [ ] Construct Properties
+  - [ ] stream
+  - [ ] EntityInstance::new()
+  - [ ] id: vertex.id
+  - [ ] type_name
+  - [ ] components (vec<String>)
+  - [ ] properties (vec<ReactivePropertyInstance>)
+  - [ ] Add ReactiveEntityInstance to HashMap
+  - [ ] Destruct EntityInstance
+    - [ ] Destruct All PropertyInstances
+    - [ ] Remove Entry from HashMap
 - [ ] `ReactivePropertyInstance`
 - [ ] `Connector`
 - [ ] `Flow`
@@ -108,6 +125,7 @@ essential ones.
 
 - [x] `Component Manager`
 - [x] `EntityTypeManager`
+- [x] `EntityInstanceVertexManager`
 - [x] `EntityInstanceManager`
 - [x] `ReactiveEntityInstanceManager`
 - [ ] `RelationTypeManager`
@@ -141,44 +159,24 @@ essential ones.
   - [x] Get Vertex Properties by UUID
   - [ ] Create Vertex
   - [ ] Create Vertex with UUID
-  - [ ] Delete Vertex
-- [ ] `EntityInstanceManager`
-  - [x] Has Entity Instance by UUID
-  - [x] Get Entity Instance by UUID
-  - [x] Get Vertex by UUID
-  - [x] Get Vertex Properties by UUID
-  - [ ] Create Vertex
-    - [ ] Parameter: type, properties
-  - [ ] Create Vertex By Id
-    - [ ] Parameter: type, properties
     - [ ] Check if id exists in Datastore (must not exist)
   - [ ] Delete Vertex
+- [ ] `EntityInstanceManager`
+  - [ ] Has Entity Instance by UUID
+  - [ ] Get Entity Instance by UUID
+  - [ ] Create Entity Instance
+    - [ ] Parameter: type, properties
+  - [ ] Create Entity Instance
+    - [ ] Parameter: type, properties
+  - [ ] Delete Entity Instance By Id
     - [ ] Parameter: id
-    - [ ] Check if id exists in HashMap (must not exist -> )
-  - [ ] Import Vertex from JSON (EntityInstance)
+  - [ ] Import EntityInstance from JSON
     - [ ] Check if id exists in Datastore (must not exist)
     - [ ] Check if id exists in HashMap (must not exist)
     - [ ] Create Vertex with id
     - [ ] Create Vertex Properties
-  - [ ] Export Vertex to JSON (EntityInstance)
+  - [ ] Export EntityInstance to JSON
     - [ ] Create EntityInstance from Vertex
 - [ ] Reactive Entity Instance Manager
   - [x] Hold references of "ReactiveEntityInstance"
     * These are the actually "running" / "living" instances
-  - [x] Model "EntityInstance" (serializable)
-  - [x] Model "ReactiveEntityInstance" (not serializable!)
-    - [ ] Construct ReactiveEntityInstance from Vertex
-      - [ ] Check if id exists in Datastore
-      - [ ] Check if id exists in HashMap
-      - [ ] Get EntityType from Vertex Type
-      - [ ] Construct Properties
-        - [ ] stream
-      - [ ] EntityInstance::new()
-        - [ ] id: vertex.id
-        - [ ] type_name
-        - [ ] components (vec<String>)
-        - [ ] properties (vec<ReactivePropertyInstance>)
-      - [ ] Add ReactiveEntityInstance to HashMap
-    - [ ] Destruct EntityInstance
-      - [ ] Destruct All PropertyInstances
-      - [ ] Remove Entry from HashMap
