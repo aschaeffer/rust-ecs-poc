@@ -1,9 +1,7 @@
 use crate::api::{EntityInstanceVertexManager, GraphDatabase, ComponentManager, EntityTypeManager, EntityInstanceVertexCreationError};
-use crate::model::EntityInstance;
 use async_trait::async_trait;
 use indradb::{Transaction, SpecificVertexQuery, Vertex, VertexProperties, VertexQueryExt};
 use serde_json::Value;
-use std::collections::hash_map::RandomState;
 use std::collections::HashMap;
 use uuid::Uuid;
 use waiter_di::*;

@@ -3,8 +3,6 @@ use async_trait::async_trait;
 use serde_json::Value;
 use std::collections::HashMap;
 use uuid::Uuid;
-use indradb::{Vertex, VertexProperties};
-use std::error::Error;
 
 #[derive(Debug)]
 pub struct EntityInstanceCreationError;
