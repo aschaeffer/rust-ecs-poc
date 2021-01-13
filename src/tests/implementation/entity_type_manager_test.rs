@@ -3,6 +3,7 @@ use crate::di::di_container;
 use waiter_di::{profiles, Provider};
 use crate::application::Application;
 use std::env;
+use random_string::{RandomString, Charsets, Charset};
 
 #[test]
 fn test_register_entity_type () {
@@ -10,7 +11,11 @@ fn test_register_entity_type () {
     let container = &mut container;
     let application = Provider::<dyn Application>::create(container);
 
-    let type_name = String::from("test1");
+    let type_name = RandomString::generate(
+        10,
+        &Charset::from_charsets(Charsets::Letters)
+    ).to_string();
+
     application.entity_type_manager.register(
         crate::model::EntityType::new(
             type_name.clone(),
@@ -29,12 +34,31 @@ fn test_register_entity_type () {
 }
 
 #[test]
+fn test_load_static_entity_types () {
+    let mut container = di_container::get::<profiles::Default>();
+    let container = &mut container;
+    let application = Provider::<dyn Application>::create(container);
+    application.entity_type_manager.load_static_entity_types();
+    assert!(application.entity_type_manager.has(String::from("add")));
+    assert!(application.entity_type_manager.has(String::from("and")));
+    assert!(application.entity_type_manager.has(String::from("sin")));
+    assert!(application.entity_type_manager.has(String::from("cos")));
+    assert!(!application.entity_type_manager.has(
+        RandomString::generate(10, &Charset::from_charsets(Charsets::Letters)).to_string()
+    ));
+}
+
+#[test]
 fn test_create_and_delete_entity_type () {
     let mut container = di_container::get::<profiles::Default>();
     let container = &mut container;
     let application = Provider::<dyn Application>::create(container);
 
-    let type_name = String::from("test1");
+    let type_name = RandomString::generate(
+        10,
+        &Charset::from_charsets(Charsets::Letters)
+    ).to_string();
+
     application.entity_type_manager.create(
         type_name.clone(),
         vec![
@@ -59,19 +83,6 @@ fn test_create_and_delete_entity_type () {
 }
 
 #[test]
-fn test_load_static_entity_types () {
-    let mut container = di_container::get::<profiles::Default>();
-    let container = &mut container;
-    let application = Provider::<dyn Application>::create(container);
-    application.entity_type_manager.load_static_entity_types();
-    assert!(application.entity_type_manager.has(String::from("add")));
-    assert!(application.entity_type_manager.has(String::from("and")));
-    assert!(application.entity_type_manager.has(String::from("sin")));
-    assert!(application.entity_type_manager.has(String::from("cos")));
-    assert!(!application.entity_type_manager.has(String::from("asdfjasdjfinasfhibna9iiiasdf")));
-}
-
-#[test]
 fn test_get_entity_types () {
     let mut container = di_container::get::<profiles::Default>();
     let container = &mut container;
@@ -89,7 +100,11 @@ fn test_register_entity_type_has_component () {
     let container = &mut container;
     let application = Provider::<dyn Application>::create(container);
 
-    let component_name = String::from("test1");
+    let component_name = RandomString::generate(
+        10,
+        &Charset::from_charsets(Charsets::Letters)
+    ).to_string();
+
     application.component_manager.register(
         crate::model::Component::new(
             component_name.clone(),
@@ -98,7 +113,12 @@ fn test_register_entity_type_has_component () {
             ]
         )
     );
-    let entity_type_name = String::from("test1");
+
+    let entity_type_name = RandomString::generate(
+        10,
+        &Charset::from_charsets(Charsets::Letters)
+    ).to_string();
+
     application.entity_type_manager.register(
         crate::model::EntityType::new(
             entity_type_name.clone(),
@@ -122,7 +142,11 @@ fn test_register_entity_type_has_property () {
     let property_name = String::from("x");
     let property_type = PropertyType::new(property_name.clone(), String::from("string"));
 
-    let entity_type_name = String::from("test1");
+    let entity_type_name = RandomString::generate(
+        10,
+        &Charset::from_charsets(Charsets::Letters)
+    ).to_string();
+
     application.entity_type_manager.register(
         EntityType::new(
             entity_type_name.clone(),
@@ -140,7 +164,10 @@ fn test_export_import_entity_type () {
     let container = &mut container;
     let application = Provider::<dyn Application>::create(container);
 
-    let type_name = String::from("test1");
+    let type_name = RandomString::generate(
+        10,
+        &Charset::from_charsets(Charsets::Letters)
+    ).to_string();
 
     let mut path = env::temp_dir();
     path.push(format!("{}.json", type_name));
