@@ -9,6 +9,9 @@ mod implementation;
 mod model;
 mod reactive;
 
+#[cfg(test)]
+mod tests;
+
 #[async_std::main]
 async fn main () {
     // let mut application = Application::new();
@@ -16,7 +19,6 @@ async fn main () {
     let container = &mut container;
     let mut application = Provider::<dyn Application>::create(container);
 
-    // component_manager.load_static_components();
-    application.init().await;
+    application.init();
     application.run().await;
 }
