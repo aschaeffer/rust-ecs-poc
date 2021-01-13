@@ -82,13 +82,13 @@ essential ones.
 - [x] License
 - [x] Code of Conduct
 - [x] Changelog
-- [ ] Code Documentation
-- [x] Unit tests
+- [x] Code Documentation (`cargo doc`)
+- [x] Unit tests (`cargo test --package rust-ecs-poc --bin rust-ecs-poc  -- --nocapture --exact -Z unstable-options --show-output`)
+- [x] Source Code Format (`cargo fmt`)
 - [ ] Reference Documentation
-- [ ] Source Code Format Linter
 - [ ] GitHub Actions
-  - [ ] Compile
-  - [ ] Run tests
+  - [x] Compile
+  - [x] Run tests
   - [ ] Create snap package
   - [ ] Lint Source Code Format
 
