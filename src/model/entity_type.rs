@@ -4,7 +4,6 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct EntityType {
-
     pub name: String,
 
     #[serde(default = "empty_string")]
@@ -15,18 +14,16 @@ pub struct EntityType {
 
     #[serde(skip)]
     pub t: Type,
-
 }
 
 impl EntityType {
-
-    pub fn new (name: String, components: Vec<String>, properties: Vec<PropertyType>) -> EntityType {
+    pub fn new(name: String, components: Vec<String>, properties: Vec<PropertyType>) -> EntityType {
         EntityType {
             name,
             description: String::from(""),
             components,
             properties,
-            t: Default::default()
+            t: Default::default(),
         }
     }
 
@@ -38,12 +35,13 @@ impl EntityType {
     /// Returns true, if the entity type contains an own property with the given name.
     /// Doesn't respect properties from properties of potential components.
     pub fn has_own_property(&self, property_name: String) -> bool {
-        !self.properties.iter()
+        !self
+            .properties
+            .iter()
             .filter(|&p| p.name == property_name)
             .collect::<Vec<_>>()
             .is_empty()
     }
-
 }
 
 fn empty_string() -> String {
