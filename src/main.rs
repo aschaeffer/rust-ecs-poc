@@ -13,8 +13,7 @@ mod reactive;
 mod tests;
 
 #[async_std::main]
-async fn main () {
-    // let mut application = Application::new();
+async fn main() {
     let mut container = di_container::get::<profiles::Default>();
     let container = &mut container;
     let mut application = Provider::<dyn Application>::create(container);

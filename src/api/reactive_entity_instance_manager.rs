@@ -1,14 +1,13 @@
 // use crate::model::{EntityInstance, EntityType, PropertyType};
 use async_trait::async_trait;
 // use uuid::Uuid;
-use std::collections::HashMap;
-use serde_json::Value;
-use uuid::Uuid;
 use crate::model::EntityInstance;
+use serde_json::Value;
+use std::collections::HashMap;
+use uuid::Uuid;
 
 #[async_trait]
 pub trait ReactiveEntityInstanceManager: Send + Sync {
-
     fn has(&self, id: Uuid) -> bool;
     fn get(&self, name: String) -> Option<EntityInstance>;
 
@@ -17,5 +16,4 @@ pub trait ReactiveEntityInstanceManager: Send + Sync {
 
     fn import(&self, path: String);
     fn export(&self, name: String, path: String);
-
 }

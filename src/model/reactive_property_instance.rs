@@ -1,13 +1,12 @@
 use bidule::Stream;
 // use indradb::NamedProperty;
 use serde_json::Value;
+use std::ops::{Deref, DerefMut};
 use std::sync::RwLock;
 use uuid::Uuid;
-use std::ops::{Deref, DerefMut};
 
 // This is not automatically persisted to graph database (yet)!
 pub struct ReactivePropertyInstance<'a> {
-
     // Vertex uuid
     pub id: Uuid,
 
@@ -15,28 +14,24 @@ pub struct ReactivePropertyInstance<'a> {
     pub name: String,
 
     // pub property: NamedProperty,
-
     pub stream: RwLock<Stream<'a, Value>>,
 
     // Store the current value
     value: RwLock<Value>,
-
     // Reference to the inbound stream ?
     // pub inbound: ReactivePropertyInstance,
 
     // References to the outbound streams ?
     // pub outbound: Vec<ReactivePropertyInstance>,
-
 }
 
 impl ReactivePropertyInstance<'_> {
-
     pub fn new(id: Uuid, name: String, value: Value) -> ReactivePropertyInstance<'static> {
         let mut i = ReactivePropertyInstance {
             id,
             name,
             stream: RwLock::new(Stream::new()),
-            value: RwLock::new(value)
+            value: RwLock::new(value),
         };
         i.init();
         i
@@ -45,7 +40,6 @@ impl ReactivePropertyInstance<'_> {
     // pub fn observe<F>(&self, subscriber: F) where F: 'static + FnMut(&Value) {
     //     self.stream.observe(subscriber);
     // }
-
 
     pub fn init(&mut self) {
         // self.stream.write().unwrap().observe(| value | self.value = value.clone());
@@ -82,5 +76,4 @@ impl ReactivePropertyInstance<'_> {
     //     let stream2 = self.stream.write().unwrap();
     //     stream2.filter(| v | v % 2 == 0);
     // }
-
 }

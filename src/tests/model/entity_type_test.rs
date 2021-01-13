@@ -1,8 +1,7 @@
-use crate::model::{Component, PropertyType, EntityType};
+use crate::model::{Component, EntityType, PropertyType};
 
 #[test]
 fn create_entity_type_test() {
-
     let entity_type_name = String::from("entity_type_name");
 
     let component_name = String::from("component_name");
@@ -25,5 +24,4 @@ fn create_entity_type_test() {
     assert_eq!(property_name, *entity_type.properties.first().unwrap().name);
 
     assert!(entity_type.has_own_property(property_name.clone()));
-
 }

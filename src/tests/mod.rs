@@ -1,5 +1,5 @@
-mod model;
 mod implementation;
+mod model;
 
-pub use model::*;
 pub use implementation::*;
+pub use model::*;
