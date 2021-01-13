@@ -1,9 +1,0 @@
-{
-  "name": "imported_component",
-  "properties": [
-    {
-      "name": "imported_property",
-      "data_type": "f64"
-    }
-  ]
-}
