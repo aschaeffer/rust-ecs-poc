@@ -24,6 +24,6 @@ fn create_entity_type_test() {
 
     assert_eq!(property_name, *entity_type.properties.first().unwrap().name);
 
-    assert!(entity_type.has_property(property_name.clone()));
+    assert!(entity_type.has_own_property(property_name.clone()));
 
 }

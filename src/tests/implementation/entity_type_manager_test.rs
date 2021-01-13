@@ -155,7 +155,7 @@ fn test_register_entity_type_has_property () {
         )
     );
     let entity_type: Option<EntityType> = application.entity_type_manager.get(entity_type_name.clone());
-    assert!(entity_type.unwrap().has_property(property_name.clone()));
+    assert!(entity_type.unwrap().has_own_property(property_name.clone()));
 }
 
 #[test]
