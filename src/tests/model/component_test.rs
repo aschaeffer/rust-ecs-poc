@@ -10,5 +10,8 @@ fn create_component_test() {
     let c = Component::new(component_name.clone(), property_types.clone());
     assert_eq!(component_name, c.name);
     assert_eq!(property_type.name, c.properties.first().unwrap().name);
-    assert_eq!(property_type.data_type, c.properties.first().unwrap().data_type);
+    assert_eq!(
+        property_type.data_type,
+        c.properties.first().unwrap().data_type
+    );
 }
