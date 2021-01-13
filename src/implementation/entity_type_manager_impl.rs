@@ -1,13 +1,13 @@
-use crate::api::{EntityTypeManager, ComponentManager};
 use crate::api::GraphDatabase;
-use crate::model::{PropertyType, EntityType};
+use crate::api::{ComponentManager, EntityTypeManager};
+use crate::model::{EntityType, PropertyType};
 use async_trait::async_trait;
 use indradb::Type;
 use rust_embed::RustEmbed;
-use waiter_di::*;
-use std::sync::RwLock;
 use std::fs::File;
 use std::io::BufReader;
+use std::sync::RwLock;
+use waiter_di::*;
 
 #[derive(RustEmbed)]
 #[folder = "static/types/entity"]
@@ -23,20 +23,17 @@ fn create_external_type_dependency() -> EntityTypes {
 
 #[component]
 pub struct EntityTypeManagerImpl {
-
     graph_database: Wrc<dyn GraphDatabase>,
 
     component_manager: Wrc<dyn ComponentManager>,
 
     entity_types: EntityTypes,
-
 }
 
 #[async_trait]
 #[provides]
 impl EntityTypeManager for EntityTypeManagerImpl {
-
-    fn register (&self, mut entity_type: crate::model::EntityType) {
+    fn register(&self, mut entity_type: crate::model::EntityType) {
         println!("Registered entity type {}", entity_type.name);
         // Construct the type
         entity_type.t = Type::new(entity_type.name.clone()).unwrap();
@@ -44,7 +41,9 @@ impl EntityTypeManager for EntityTypeManagerImpl {
             let component = self.component_manager.get(component_name.clone());
             if component.is_some() {
                 // println!("{} {:?}", component_name, component.unwrap());
-                entity_type.properties.append(&mut component.unwrap().properties);
+                entity_type
+                    .properties
+                    .append(&mut component.unwrap().properties);
             } else {
                 println!("No component named {}", component_name);
             }
@@ -58,7 +57,7 @@ impl EntityTypeManager for EntityTypeManagerImpl {
         // }
     }
 
-    fn load_static_entity_types (&self) {
+    fn load_static_entity_types(&self) {
         // self.component_manager.list_components();
         for file in EntityTypeAsset::iter() {
             let filename = file.as_ref();
@@ -76,7 +75,7 @@ impl EntityTypeManager for EntityTypeManagerImpl {
         }
     }
 
-    fn get_entity_types (&self) -> Vec<crate::model::EntityType> {
+    fn get_entity_types(&self) -> Vec<crate::model::EntityType> {
         self.entity_types.0.read().unwrap().to_vec()
     }
 
@@ -91,29 +90,32 @@ impl EntityTypeManager for EntityTypeManagerImpl {
     }
 
     fn get(&self, name: String) -> Option<EntityType> {
-        self.entity_types.0
+        self.entity_types
+            .0
             .read()
             .unwrap()
             .to_vec()
             .into_iter()
-            .find(| entity_type | entity_type.name == name)
+            .find(|entity_type| entity_type.name == name)
     }
 
     fn create(&self, name: String, components: Vec<String>, properties: Vec<PropertyType>) {
         self.register(EntityType::new(
             name.clone(),
             components.to_vec(),
-            properties.to_vec()
+            properties.to_vec(),
         ));
     }
 
     fn delete(&self, name: String) {
-        self.entity_types.0
+        self.entity_types
+            .0
             .write()
             .unwrap()
-            .retain(| entity_type | entity_type.name != name);
+            .retain(|entity_type| entity_type.name != name);
     }
 
+    // TODO: return type_name of the EntityType
     fn import(&self, path: String) {
         let file = File::open(path);
         if file.is_ok() {
@@ -132,21 +134,25 @@ impl EntityTypeManager for EntityTypeManagerImpl {
             let r_file = File::create(path.clone());
             match r_file {
                 Ok(file) => {
-                    let result = serde_json::to_writer_pretty(
-                        &file,
-                        &o_entity_type.unwrap()
-                    );
+                    let result = serde_json::to_writer_pretty(&file, &o_entity_type.unwrap());
                     if result.is_err() {
-                        println!("Failed to export entity type {} to {}: {}",
-                                 name, path, result.err().unwrap());
+                        println!(
+                            "Failed to export entity type {} to {}: {}",
+                            name,
+                            path,
+                            result.err().unwrap()
+                        );
                     }
-                },
+                }
                 Err(error) => {
-                    println!("Failed to export entity type {} to {}: {}",
-                             name, path, error.to_string());
+                    println!(
+                        "Failed to export entity type {} to {}: {}",
+                        name,
+                        path,
+                        error.to_string()
+                    );
                 }
             }
         }
     }
-
 }
