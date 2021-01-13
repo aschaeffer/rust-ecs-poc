@@ -83,7 +83,7 @@ essential ones.
 - [x] Code of Conduct
 - [x] Changelog
 - [ ] Code Documentation
-- [ ] Unit tests
+- [x] Unit tests
 - [ ] Reference Documentation
 - [ ] Source Code Format Linter
 - [ ] GitHub Actions

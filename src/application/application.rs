@@ -1,9 +1,9 @@
 use crate::api::*;
-use waiter_di::*;
 use async_trait::async_trait;
 use std::sync::RwLock;
 use std::thread;
 use std::time::Duration;
+use waiter_di::*;
 
 #[wrapper]
 pub struct RunningState(RwLock<bool>);
@@ -14,19 +14,16 @@ fn create_external_type_dependency() -> RunningState {
 }
 
 #[async_trait]
-pub trait Application : Send + Sync {
-
+pub trait Application: Send + Sync {
     fn init(&self);
 
     async fn run(&mut self);
 
     fn stop(&self);
-
 }
 
 #[module]
 pub struct ApplicationImpl {
-
     running: RunningState,
 
     pub component_manager: Wrc<dyn ComponentManager>,
@@ -35,13 +32,11 @@ pub struct ApplicationImpl {
     pub entity_instance_manager: Wrc<dyn EntityInstanceManager>,
     pub system_constants_initializer: Wrc<dyn SystemConstantsInitializer>,
     pub graph_database: Wrc<dyn GraphDatabase>,
-
 }
 
 #[async_trait]
 #[provides]
 impl Application for ApplicationImpl {
-
     fn init(&self) {
         self.component_manager.load_static_components();
         self.entity_type_manager.load_static_entity_types();
@@ -57,7 +52,6 @@ impl Application for ApplicationImpl {
         while *running {
             thread::sleep(Duration::from_millis(1));
         }
-
     }
 
     fn stop(&self) {
@@ -66,5 +60,4 @@ impl Application for ApplicationImpl {
             *running = false;
         }
     }
-
 }
