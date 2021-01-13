@@ -1,11 +1,11 @@
 use crate::api::ComponentManager;
+use crate::model::PropertyType;
 use async_trait::async_trait;
 use rust_embed::RustEmbed;
-use waiter_di::*;
-use std::sync::RwLock;
-use crate::model::PropertyType;
 use std::fs::File;
 use std::io::BufReader;
+use std::sync::RwLock;
+use waiter_di::*;
 
 #[derive(RustEmbed)]
 #[folder = "static/components"]
@@ -28,18 +28,14 @@ pub struct ComponentManagerImpl {
 #[async_trait]
 #[provides]
 impl ComponentManager for ComponentManagerImpl {
-
-    fn register (&self, component: crate::model::Component) {
+    fn register(&self, component: crate::model::Component) {
         if !self.has(component.name.clone()) {
             println!("Registered component {}", component.name);
-            self.components.0
-                .write()
-                .unwrap()
-                .push(component);
+            self.components.0.write().unwrap().push(component);
         }
     }
 
-    fn load_static_components (&self) {
+    fn load_static_components(&self) {
         for file in ComponentAsset::iter() {
             let filename = file.as_ref();
             println!("Loading component from resource {}", filename);
@@ -56,7 +52,7 @@ impl ComponentManager for ComponentManagerImpl {
     }
 
     // Returns a copy
-    fn get_components (&self) -> Vec<crate::model::Component> {
+    fn get_components(&self) -> Vec<crate::model::Component> {
         self.components.0.read().unwrap().to_vec()
     }
 
@@ -71,26 +67,28 @@ impl ComponentManager for ComponentManagerImpl {
     }
 
     fn get(&self, name: String) -> Option<crate::model::Component> {
-        self.components.0
+        self.components
+            .0
             .read()
             .unwrap()
             .to_vec()
             .into_iter()
-            .find(| component | component.name == name)
+            .find(|component| component.name == name)
     }
 
     fn create(&self, name: String, properties: Vec<PropertyType>) {
         self.register(crate::model::Component::new(
             name.clone(),
-            properties.to_vec()
+            properties.to_vec(),
         ));
     }
 
     fn delete(&self, name: String) {
-        self.components.0
+        self.components
+            .0
             .write()
             .unwrap()
-            .retain(| component | component.name != name);
+            .retain(|component| component.name != name);
     }
 
     fn import(&self, path: String) {
@@ -111,21 +109,25 @@ impl ComponentManager for ComponentManagerImpl {
             let r_file = File::create(path.clone());
             match r_file {
                 Ok(file) => {
-                    let result = serde_json::to_writer_pretty(
-                        &file,
-                        &o_component.unwrap()
-                    );
+                    let result = serde_json::to_writer_pretty(&file, &o_component.unwrap());
                     if result.is_err() {
-                        println!("Failed to export component {} to {}: {}",
-                                 name, path, result.err().unwrap());
+                        println!(
+                            "Failed to export component {} to {}: {}",
+                            name,
+                            path,
+                            result.err().unwrap()
+                        );
                     }
-                },
+                }
                 Err(error) => {
-                    println!("Failed to export component {} to {}: {}",
-                             name, path, error.to_string());
+                    println!(
+                        "Failed to export component {} to {}: {}",
+                        name,
+                        path,
+                        error.to_string()
+                    );
                 }
             }
         }
     }
-
 }
