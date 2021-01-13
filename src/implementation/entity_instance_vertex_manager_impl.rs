@@ -1,6 +1,9 @@
-use crate::api::{EntityInstanceVertexManager, GraphDatabase, ComponentManager, EntityTypeManager, EntityInstanceVertexCreationError};
+use crate::api::{
+    ComponentManager, EntityInstanceVertexCreationError, EntityInstanceVertexManager,
+    EntityTypeManager, GraphDatabase,
+};
 use async_trait::async_trait;
-use indradb::{Transaction, SpecificVertexQuery, Vertex, VertexProperties, VertexQueryExt};
+use indradb::{SpecificVertexQuery, Transaction, Vertex, VertexProperties, VertexQueryExt};
 use serde_json::Value;
 use std::collections::HashMap;
 use uuid::Uuid;
@@ -10,19 +13,16 @@ use waiter_di::*;
 
 #[component]
 pub struct EntityInstanceVertexManagerImpl {
-
     graph_database: Wrc<dyn GraphDatabase>,
 
     component_manager: Wrc<dyn ComponentManager>,
 
     entity_type_manager: Wrc<dyn EntityTypeManager>,
-
 }
 
 #[async_trait]
 #[provides]
 impl EntityInstanceVertexManager for EntityInstanceVertexManagerImpl {
-
     fn has(&self, id: Uuid) -> bool {
         let r_transaction = self.graph_database.get_transaction();
         if r_transaction.is_ok() {
@@ -61,7 +61,11 @@ impl EntityInstanceVertexManager for EntityInstanceVertexManagerImpl {
         None
     }
 
-    fn create(&self, type_name: String, properties: HashMap<String, Value>) -> Result<Uuid, EntityInstanceVertexCreationError> {
+    fn create(
+        &self,
+        type_name: String,
+        properties: HashMap<String, Value>,
+    ) -> Result<Uuid, EntityInstanceVertexCreationError> {
         let r_transaction = self.graph_database.get_transaction();
         if r_transaction.is_ok() {
             let transaction = r_transaction.unwrap();
@@ -72,7 +76,8 @@ impl EntityInstanceVertexManager for EntityInstanceVertexManagerImpl {
                     let id = result.unwrap();
                     let q = SpecificVertexQuery::single(id);
                     for (property_name, value) in properties {
-                        let property_result = transaction.set_vertex_properties(q.clone().property(property_name), &value);
+                        let property_result = transaction
+                            .set_vertex_properties(q.clone().property(property_name), &value);
                         if !property_result.is_ok() {
                             return Err(EntityInstanceVertexCreationError.into());
                         }
@@ -84,7 +89,12 @@ impl EntityInstanceVertexManager for EntityInstanceVertexManagerImpl {
         Err(EntityInstanceVertexCreationError.into())
     }
 
-    fn create_with_id(&self, type_name: String, id: Uuid, properties: HashMap<String, Value>) -> Result<Uuid, EntityInstanceVertexCreationError> {
+    fn create_with_id(
+        &self,
+        type_name: String,
+        id: Uuid,
+        properties: HashMap<String, Value>,
+    ) -> Result<Uuid, EntityInstanceVertexCreationError> {
         if !self.has(id) {
             let r_transaction = self.graph_database.get_transaction();
             if r_transaction.is_ok() {
@@ -95,7 +105,8 @@ impl EntityInstanceVertexManager for EntityInstanceVertexManagerImpl {
                     if result.is_ok() {
                         let q = SpecificVertexQuery::single(id);
                         for (property_name, value) in properties {
-                            let property_result = transaction.set_vertex_properties(q.clone().property(property_name), &value);
+                            let property_result = transaction
+                                .set_vertex_properties(q.clone().property(property_name), &value);
                             if !property_result.is_ok() {
                                 return Err(EntityInstanceVertexCreationError.into());
                             }
@@ -117,5 +128,4 @@ impl EntityInstanceVertexManager for EntityInstanceVertexManagerImpl {
             }
         }
     }
-
 }
