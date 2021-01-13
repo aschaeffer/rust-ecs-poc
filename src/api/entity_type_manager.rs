@@ -1,14 +1,13 @@
-use crate::model::PropertyType;
 use crate::model::EntityType;
+use crate::model::PropertyType;
 use async_trait::async_trait;
 
 #[async_trait]
-pub trait EntityTypeManager : Send + Sync {
-
-    fn register (&self, entity_type: EntityType);
-    fn load_static_entity_types (&self);
-    fn get_entity_types (&self) -> Vec<EntityType>;
-    fn list_entity_types (&self);
+pub trait EntityTypeManager: Send + Sync {
+    fn register(&self, entity_type: EntityType);
+    fn load_static_entity_types(&self);
+    fn get_entity_types(&self) -> Vec<EntityType>;
+    fn list_entity_types(&self);
 
     fn has(&self, name: String) -> bool;
     fn get(&self, name: String) -> Option<EntityType>;
@@ -18,5 +17,4 @@ pub trait EntityTypeManager : Send + Sync {
 
     fn import(&self, path: String);
     fn export(&self, name: String, path: String);
-
 }
