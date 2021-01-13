@@ -1,12 +1,11 @@
 use indradb::VertexProperties;
-use uuid::Uuid;
-use serde_json::Value;
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 use std::collections::HashMap;
+use uuid::Uuid;
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct EntityInstance {
-
     #[serde(alias = "type")]
     pub type_name: String,
 
@@ -17,33 +16,31 @@ pub struct EntityInstance {
 
     #[serde(default = "HashMap::new")]
     pub properties: HashMap<String, Value>,
-
 }
 
 impl EntityInstance {
-
-    pub fn new (type_name: String, id: Uuid, properties: HashMap<String, Value>) -> EntityInstance {
+    pub fn new(type_name: String, id: Uuid, properties: HashMap<String, Value>) -> EntityInstance {
         EntityInstance {
             type_name,
             id,
             description: String::from(""),
-            properties
+            properties,
         }
     }
 
-    pub fn from_vertex_properties (properties: VertexProperties) -> EntityInstance {
+    pub fn from_vertex_properties(properties: VertexProperties) -> EntityInstance {
         let type_name = properties.vertex.t.0.clone();
         let id = properties.vertex.id.clone();
-        let properties: HashMap<String, Value> = properties.props
+        let properties: HashMap<String, Value> = properties
+            .props
             .iter()
-            .map(| p | (p.name.clone(), p.value.clone()))
+            .map(|p| (p.name.clone(), p.value.clone()))
             .collect();
         EntityInstance {
             type_name,
             id,
             description: String::new(),
-            properties
+            properties,
         }
     }
-
 }
