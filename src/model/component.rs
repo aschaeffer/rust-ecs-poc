@@ -22,4 +22,12 @@ impl Component {
         }
     }
 
+    /// Returns true, if the component contains a property with the given name.
+    pub fn has_property(&self, property_name: String) -> bool {
+        !self.properties.iter()
+            .filter(|&p| p.name == property_name)
+            .collect::<Vec<_>>()
+            .is_empty()
+    }
+
 }
