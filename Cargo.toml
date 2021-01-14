@@ -2,10 +2,13 @@
 name = "rust-ecs-poc"
 description = "Inexor Reactive Entity Component System --- Proof of Concept"
 version = "0.1.0"
-authors = ["Andreas Schaeffer"]
+authors = ["Andreas Schaeffer <hanack@nooblounge.net"]
 edition = "2018"
 license = "MIT"
+license-file = "LICENSE"
 readme = "README.md"
+keywords = ["entity", "entity system", "entity component system", "graph database", "reactive"]
+categories = ["game-engine"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
