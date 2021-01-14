@@ -91,6 +91,7 @@ essential ones.
   - [x] Compile
   - [x] Run tests
   - [x] Generate Code Documentation
+  - [x] Create GitHub Release
   - [ ] Create snap package
   - [ ] Lint Source Code Format
 
