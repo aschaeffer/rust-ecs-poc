@@ -85,10 +85,11 @@ essential ones.
 - [x] Code Documentation (`cargo doc`)
 - [x] Unit tests (`cargo test --package rust-ecs-poc --bin rust-ecs-poc  -- --nocapture --exact -Z unstable-options --show-output`)
 - [x] Source Code Format (`cargo fmt`)
-- [ ] Reference Documentation
+- [ ] Reference Documentation (rst, wiki)
 - [ ] GitHub Actions
   - [x] Compile
   - [x] Run tests
+  - [x] Generate Code Documentation
   - [ ] Create snap package
   - [ ] Lint Source Code Format
 
