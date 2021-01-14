@@ -72,6 +72,7 @@ goals:
 - [x] Embedded Graph Database (indradb)
 - [x] Reactive Streams (bidule)
 - [ ] JavaScript Runtime (deno)
+- [ ] Logging
 
 Further libraries might be of interest (asset management, remote procedure calls, ...) but these four libraries are the
 essential ones.
