@@ -33,7 +33,7 @@ impl EntityType {
     }
 
     /// Returns true, if the entity type contains an own property with the given name.
-    /// Doesn't respect properties from properties of potential components.
+    /// Doesn't respect properties from potential components.
     pub fn has_own_property(&self, property_name: String) -> bool {
         !self
             .properties
@@ -44,6 +44,7 @@ impl EntityType {
     }
 }
 
+#[cfg_attr(tarpaulin, ignore)]
 fn empty_string() -> String {
     "".to_string()
 }
