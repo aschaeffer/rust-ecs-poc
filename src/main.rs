@@ -10,6 +10,7 @@ mod model;
 mod reactive;
 
 #[cfg(test)]
+#[cfg_attr(tarpaulin, ignore)]
 mod tests;
 
 #[async_std::main]
