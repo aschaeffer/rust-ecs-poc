@@ -1,4 +1,4 @@
-use crate::model::{Component, EntityType, PropertyType};
+use crate::model::{EntityType, PropertyType};
 
 #[test]
 fn create_entity_type_test() {
