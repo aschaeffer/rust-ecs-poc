@@ -68,12 +68,4 @@ impl ReactivePropertyInstance<'_> {
         self.stream.read().unwrap().send(&value);
     }
 
-    // pub fn save(&mut self, value: Value) {
-    //
-    // }
-
-    // pub fn create_gate(&mut self) {
-    //     let stream2 = self.stream.write().unwrap();
-    //     stream2.filter(| v | v % 2 == 0);
-    // }
 }
