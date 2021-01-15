@@ -5,6 +5,10 @@ use serde::{Deserialize, Serialize};
 #[derive(Serialize, Deserialize)]
 pub struct RelationType {
     pub name: String,
+
+    #[serde(default = "empty_string")]
+    pub description: String,
+
     pub outbound_type: String,
     pub inbound_type: String,
     pub components: Vec<String>,
@@ -24,6 +28,7 @@ impl RelationType {
     ) -> RelationType {
         RelationType {
             name,
+            description: String::from(""),
             outbound_type,
             inbound_type,
             components,
@@ -47,4 +52,9 @@ impl RelationType {
             .collect::<Vec<_>>()
             .is_empty()
     }
+}
+
+#[cfg_attr(tarpaulin, ignore)]
+fn empty_string() -> String {
+    "".to_string()
 }
