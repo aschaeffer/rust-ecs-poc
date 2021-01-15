@@ -31,4 +31,20 @@ impl RelationType {
             t: Default::default(),
         }
     }
+
+    /// Returns true, if the relation type is a.
+    pub fn is_a(&self, component_name: String) -> bool {
+        self.components.contains(&component_name)
+    }
+
+    /// Returns true, if the relation type contains an own property with the given name.
+    /// Doesn't respect properties from potential components.
+    pub fn has_own_property(&self, property_name: String) -> bool {
+        !self
+            .properties
+            .iter()
+            .filter(|&p| p.name == property_name)
+            .collect::<Vec<_>>()
+            .is_empty()
+    }
 }
