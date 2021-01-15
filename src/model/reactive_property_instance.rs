@@ -17,7 +17,7 @@ pub struct ReactivePropertyInstance<'a> {
     pub stream: RwLock<Stream<'a, Value>>,
 
     // Store the current value
-    value: RwLock<Value>,
+    pub value: RwLock<Value>,
     // Reference to the inbound stream ?
     // pub inbound: ReactivePropertyInstance,
 
