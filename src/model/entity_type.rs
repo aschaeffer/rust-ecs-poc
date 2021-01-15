@@ -17,7 +17,11 @@ pub struct EntityType {
 }
 
 impl EntityType {
-    pub fn new(name: String, components: Vec<String>, properties: Vec<PropertyType>) -> EntityType {
+    pub fn new(
+        name: String,
+        components: Vec<String>,
+        properties: Vec<PropertyType>
+    ) -> EntityType {
         EntityType {
             name,
             description: String::from(""),
