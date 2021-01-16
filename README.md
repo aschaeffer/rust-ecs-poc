@@ -180,3 +180,21 @@ essential ones.
   - [x] Hold references of "ReactiveEntityInstance"
     * These are the actually "running" / "living" instances
   - [ ] Check if id exists in HashMap (must not exist)
+
+### Logic Layer Implementations
+
+- [ ] Logical Gate
+  - [ ] AND
+- [ ] Logical Gate Test
+  - [ ] Create Reactive Entity Instance 1 with one boolean property
+  - [ ] Create Reactive Entity Instance 2 with one boolean property
+  - [ ] Create Reactive Entity Instance 3 with three boolean properties
+  - [ ] Create Reactive Entity Instance 4 with one boolean property
+  - [ ] Propagation: Connect Property of 1 with 3-1
+  - [ ] Propagation: Connect Property 2 with 3-2
+  - [ ] Propagation: Connect Property 3-3 with 4
+  - [ ] Behaviour: Logical Gate AND
+           ____
+1 --- 3_1 | 3  |
+          | && | 3_3 --- 4
+2 --- 3_2 |____|
