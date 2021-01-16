@@ -1,6 +1,7 @@
 use crate::model::property_type::PropertyType;
 use indradb::Type;
 use serde::{Deserialize, Serialize};
+use std::str::FromStr;
 
 #[derive(Serialize, Deserialize)]
 pub struct RelationType {
@@ -26,6 +27,7 @@ impl RelationType {
         components: Vec<String>,
         properties: Vec<PropertyType>,
     ) -> RelationType {
+        let t = Type::from_str(name.clone().as_str()).unwrap();
         RelationType {
             name,
             description: String::from(""),
@@ -33,7 +35,7 @@ impl RelationType {
             inbound_type,
             components,
             properties,
-            t: Default::default(),
+            t,
         }
     }
 

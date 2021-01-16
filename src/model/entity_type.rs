@@ -1,6 +1,7 @@
 use crate::model::property_type::PropertyType;
 use indradb::Type;
 use serde::{Deserialize, Serialize};
+use std::str::FromStr;
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct EntityType {
@@ -22,12 +23,13 @@ impl EntityType {
         components: Vec<String>,
         properties: Vec<PropertyType>
     ) -> EntityType {
+        let t = Type::from_str(name.clone().as_str()).unwrap();
         EntityType {
             name,
             description: String::from(""),
             components,
             properties,
-            t: Default::default(),
+            t,
         }
     }
 

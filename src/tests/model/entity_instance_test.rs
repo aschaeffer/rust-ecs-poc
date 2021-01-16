@@ -1,4 +1,4 @@
-use crate::model::{EntityInstance};
+use crate::model::EntityInstance;
 use uuid::Uuid;
 use uuid::v1::Timestamp;
 use std::collections::HashMap;
