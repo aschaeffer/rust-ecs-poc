@@ -17,7 +17,6 @@ pub struct Connector<'a> {
 impl Connector<'_> {
     pub fn from_relation<'a>(relation: Arc<ReactiveRelationInstance<'a>>) -> Connector<'a> {
         let mut connector = Connector {
-            // internal_value: RwLock::new(Stream::new()),
             relation: relation.clone(),
             handle_id: 0,
         };
@@ -25,15 +24,15 @@ impl Connector<'_> {
         connector
     }
 
+    /// Constructs a new connector using an outbound entity (+ name of the property) and
+    /// an inbound entity (+ name of the property)
     pub fn new(
         outbound: Arc<ReactiveEntityInstance<'static>>,
         outbound_property_name: String,
         inbound: Arc<ReactiveEntityInstance<'static>>,
         inbound_property_name: String,
     ) -> Connector<'static> {
-        let mut properties = HashMap::new();
-        properties.insert(PROPERTY_NAME_OUTBOUND.to_string(), json!(outbound_property_name));
-        properties.insert(PROPERTY_NAME_INBOUND.to_string(), json!(inbound_property_name));
+        let properties = get_connector_relation_properties(outbound_property_name, inbound_property_name);
         let relation = Arc::new(ReactiveRelationInstance::create_with_properties(
             outbound.clone(),
             TYPE_NAME_CONNECTOR.to_string(),
@@ -85,3 +84,11 @@ impl Drop for Connector<'_> {
     }
 }
 
+/// The relation instance of type connector contains exactly two properties
+/// which contains the names of the entity properties.
+fn get_connector_relation_properties(outbound_property_name: String, inbound_property_name: String) -> HashMap<String, Value> {
+    let mut properties = HashMap::new();
+    properties.insert(PROPERTY_NAME_OUTBOUND.to_string(), json!(outbound_property_name));
+    properties.insert(PROPERTY_NAME_INBOUND.to_string(), json!(inbound_property_name));
+    properties
+}
