@@ -1,0 +1,9 @@
+{
+  "outbound_id": "d5f6e205-ccc6-4b63-9675-014831ecbf3f",
+  "type": "connector",
+  "inbound_id": "60f08554-1258-4347-93d2-b05c7f9b51d7",
+  "properties": {
+    "outbound_property_name": "quotient",
+    "inbound_property_name": "value"
+  }
+}

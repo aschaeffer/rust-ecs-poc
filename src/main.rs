@@ -1,6 +1,9 @@
+#![feature(unsized_tuple_coercion)]
+
+use waiter_di::*;
+
 use crate::application::Application;
 use crate::di::*;
-use waiter_di::*;
 
 mod api;
 mod application;
@@ -12,6 +15,7 @@ mod reactive;
 #[cfg(test)]
 #[cfg_attr(tarpaulin, ignore)]
 mod tests;
+pub mod bidule;
 
 #[async_std::main]
 async fn main() {

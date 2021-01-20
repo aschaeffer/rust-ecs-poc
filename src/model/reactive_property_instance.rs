@@ -1,5 +1,4 @@
-use bidule::Stream;
-// use indradb::NamedProperty;
+use crate::bidule::Stream;
 use serde_json::Value;
 use std::ops::{Deref, DerefMut};
 use std::sync::RwLock;
@@ -18,11 +17,6 @@ pub struct ReactivePropertyInstance<'a> {
 
     // Store the current value
     pub value: RwLock<Value>,
-    // Reference to the inbound stream ?
-    // pub inbound: ReactivePropertyInstance,
-
-    // References to the outbound streams ?
-    // pub outbound: Vec<ReactivePropertyInstance>,
 }
 
 impl ReactivePropertyInstance<'_> {
@@ -62,10 +56,29 @@ impl ReactivePropertyInstance<'_> {
         self.stream.read().unwrap().send(signal);
     }
 
-    // Resend the last value
+    // Resend the current value manually
     pub fn tick(&self) {
         let value = self.value.read().unwrap().deref().clone();
         self.stream.read().unwrap().send(&value);
     }
 
+    pub fn as_bool(&self) -> Option<bool> {
+        self.get().as_bool()
+    }
+
+    pub fn as_u64(&self) -> Option<u64> {
+        self.get().as_u64()
+    }
+
+    pub fn as_i64(&self) -> Option<i64> {
+        self.get().as_i64()
+    }
+
+    pub fn as_f64(&self) -> Option<f64> {
+        self.get().as_f64()
+    }
+
+    pub fn as_string(&self) -> Option<String> {
+        self.get().as_str().and_then(|s| Some(String::from(s)))
+    }
 }

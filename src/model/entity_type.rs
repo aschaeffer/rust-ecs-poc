@@ -26,7 +26,7 @@ impl EntityType {
         let t = Type::from_str(name.clone().as_str()).unwrap();
         EntityType {
             name,
-            description: String::from(""),
+            description: empty_string(),
             components,
             properties,
             t,
@@ -41,12 +41,8 @@ impl EntityType {
     /// Returns true, if the entity type contains an own property with the given name.
     /// Doesn't respect properties from potential components.
     pub fn has_own_property(&self, property_name: String) -> bool {
-        !self
-            .properties
-            .iter()
-            .filter(|&p| p.name == property_name)
-            .collect::<Vec<_>>()
-            .is_empty()
+        !self.properties.iter()
+            .filter(|&p| p.name == property_name).collect::<Vec<_>>().is_empty()
     }
 }
 

@@ -7,6 +7,10 @@ pub enum OperatorPosition {
     RHS,
 }
 
+pub type ExpressionValue<T> = (OperatorPosition, T);
+pub type BinaryExpressionValue = ExpressionValue<bool>;
+// pub type BinaryExpressionValue = ExpressionValue<bool>;
+
 /// Represents an expression with a left hand side and a right hand side.
 #[derive(Copy, Clone, Debug)]
 pub struct Expression<LHS, RHS> {

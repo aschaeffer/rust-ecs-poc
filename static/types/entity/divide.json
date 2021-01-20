@@ -1,8 +1,19 @@
 {
   "name": "divide",
   "components": [
-    "numeric_operation_2_1"
   ],
   "properties": [
+    {
+      "name": "dividend",
+      "data_type": "number"
+    },
+    {
+      "name": "divisor",
+      "data_type": "number"
+    },
+    {
+      "name": "quotient",
+      "data_type": "number"
+    }
   ]
 }

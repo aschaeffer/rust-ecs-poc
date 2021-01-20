@@ -1,6 +1,6 @@
 use crate::model::{ReactiveEntityInstance, ReactivePropertyInstance};
-use crate::reactive::{Expression, OperatorPosition};
-use bidule::Stream;
+use crate::reactive::{Expression, OperatorPosition, BinaryExpressionValue};
+use crate::bidule::Stream;
 use indradb::VertexProperties;
 use serde_json::{json, Value};
 use std::sync::RwLock;
@@ -9,9 +9,9 @@ type BinaryOperation = fn(bool, bool) -> bool;
 
 // Generic implementation of an expression(LHS,RHS) using reactive streams
 pub struct LogicalGate<'a> {
-    pub lhs: RwLock<Stream<'a, (OperatorPosition, bool)>>,
+    pub lhs: RwLock<Stream<'a, BinaryExpressionValue>>,
 
-    pub rhs: RwLock<Stream<'a, (OperatorPosition, bool)>>,
+    pub rhs: RwLock<Stream<'a, BinaryExpressionValue>>,
 
     pub f: BinaryOperation,
 
@@ -38,7 +38,7 @@ impl LogicalGate<'_> {
             .stream
             .read()
             .unwrap()
-            .map(|v| -> (OperatorPosition, bool) {
+            .map(|v| -> BinaryExpressionValue {
                 match v.as_bool() {
                     Some(b) => (OperatorPosition::RHS, b),
                     None => (OperatorPosition::RHS, false),

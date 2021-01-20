@@ -30,7 +30,7 @@ impl RelationType {
         let t = Type::from_str(name.clone().as_str()).unwrap();
         RelationType {
             name,
-            description: String::from(""),
+            description: empty_string(),
             outbound_type,
             inbound_type,
             components,
@@ -47,12 +47,8 @@ impl RelationType {
     /// Returns true, if the relation type contains an own property with the given name.
     /// Doesn't respect properties from potential components.
     pub fn has_own_property(&self, property_name: String) -> bool {
-        !self
-            .properties
-            .iter()
-            .filter(|&p| p.name == property_name)
-            .collect::<Vec<_>>()
-            .is_empty()
+        !self.properties.iter()
+            .filter(|&p| p.name == property_name).collect::<Vec<_>>().is_empty()
     }
 }
 

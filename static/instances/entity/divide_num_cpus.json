@@ -1,0 +1,8 @@
+{
+  "type": "divide",
+  "id": "d5f6e205-ccc6-4b63-9675-014831ecbf3f",
+  "description": "Number of CPUs",
+  "properties": {
+    "value": "1"
+  }
+}

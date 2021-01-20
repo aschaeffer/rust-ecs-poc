@@ -1,7 +1,9 @@
+use crate::api::{PropertyInstanceGetter, PropertyInstanceSetter};
 use crate::model::ReactivePropertyInstance;
 use indradb::VertexProperties;
 use std::collections::HashMap;
 use uuid::Uuid;
+use serde_json::Value;
 
 pub struct ReactiveEntityInstance<'a> {
     pub type_name: String,
@@ -11,6 +13,9 @@ pub struct ReactiveEntityInstance<'a> {
     pub description: String,
 
     pub properties: HashMap<String, ReactivePropertyInstance<'a>>,
+
+    // TODO: pub components: Vec<String>
+    // TODO: pub fn is_a(component: String) -> bool {}
 }
 
 impl ReactiveEntityInstance<'_> {
@@ -36,6 +41,36 @@ impl ReactiveEntityInstance<'_> {
             id,
             description: String::new(),
             properties,
+        }
+    }
+}
+
+impl PropertyInstanceGetter for ReactiveEntityInstance<'_> {
+    fn as_bool(&self, property_name: String) -> Option<bool> {
+        self.properties.get(&property_name).and_then(|p| p.as_bool())
+    }
+
+    fn as_u64(&self, property_name: String) -> Option<u64> {
+        self.properties.get(&property_name).and_then(|p| p.as_u64())
+    }
+
+    fn as_i64(&self, property_name: String) -> Option<i64> {
+        self.properties.get(&property_name).and_then(|p| p.as_i64())
+    }
+
+    fn as_f64(&self, property_name: String) -> Option<f64> {
+        self.properties.get(&property_name).and_then(|p| p.as_f64())
+    }
+
+    fn as_string(&self, property_name: String) -> Option<String> {
+        self.properties.get(&property_name).and_then(|p| p.as_string())
+    }
+}
+
+impl PropertyInstanceSetter for ReactiveEntityInstance<'_> {
+    fn set(&self, property_name: String, value: Value) {
+        if let Some(instance) = self.properties.get(&property_name) {
+            instance.set(value);
         }
     }
 }

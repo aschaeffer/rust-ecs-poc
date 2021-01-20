@@ -1,0 +1,9 @@
+{
+  "outbound_id": "ddde5b62-e85a-4b26-bfbd-70e51c2be815",
+  "type": "connector",
+  "inbound_id": "d5f6e205-ccc6-4b63-9675-014831ecbf3f",
+  "properties": {
+    "outbound_property_name": "value",
+    "inbound_property_name": "dividend"
+  }
+}

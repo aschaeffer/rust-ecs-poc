@@ -44,7 +44,8 @@ The minimal valuable product (MVP) contains the following goals:
 
 - [x] As a developer I can define components using the API
 - [x] As a developer I can create entities (with properties) using the API
-- [ ] As a developer I can connect and disconnect two properties which data flows from one to the other using the API
+- [x] As a developer I can create relations (with properties) using the API
+- [x] As a developer I can connect and disconnect two properties which data flows from one to the other using the API
 - [ ] As a developer I can create an entity of type AND-operation which outputs the AND-operation of two inputs using the API
 
 ### Flow Designer
@@ -93,36 +94,53 @@ essential ones.
   - [x] Generate Code Documentation
   - [x] Create GitHub Release
   - [ ] Create snap package
-  - [ ] Lint Source Code Format
 
 ## Implementation
 
 ### Models
 
 - [x] `Component`
+  - [x] Serializable
 - [x] `EntityType`
+  - [x] Serializable
 - [x] `EntityInstance`
-- [ ] `ReactiveEntityInstance`
-  - [x] Not serializable
-  - [x] Running / Living instances
-  - [ ] Construct ReactiveEntityInstance from Vertex
-  - [ ] Check if id exists in Datastore
-  - [ ] Check if id exists in HashMap
-  - [ ] Get EntityType from Vertex Type
-  - [ ] Construct Properties
-  - [ ] stream
-  - [ ] EntityInstance::new()
-  - [ ] id: vertex.id
-  - [ ] type_name
-  - [ ] components (vec<String>)
-  - [ ] properties (vec<ReactivePropertyInstance>)
-  - [ ] Add ReactiveEntityInstance to HashMap
-  - [ ] Destruct EntityInstance
-    - [ ] Destruct All PropertyInstances
-    - [ ] Remove Entry from HashMap
-- [ ] `ReactivePropertyInstance`
-- [ ] `Connector`
+  - [x] Serializable
+  - [x] From Vertex Properties
+- [x] `RelationInstance`
+  - [x] Serializable
+  - [x] From Edge Properties
 - [ ] `Flow`
+  - [ ] Serializable
+  - [ ] List of entity_
+- [x] `ReactivePropertyInstance`
+  - [x] Not serializable
+  - [x] Getter
+  - [x] Typed Getters
+  - [x] Setter
+  - [x] Send (Send but not set)
+  - [x] Tick (Resend)
+- [x] `ReactiveEntityInstance`
+  - [x] Not serializable
+  - [x] Construct ReactiveEntityInstance from Vertex
+  - [x] Construct Properties
+  - [x] Typed Getters
+  - [x] Setter
+- [x] `ReactiveRelationInstance`
+  - [x] Not serializable
+  - [x] Construct ReactiveRelationInstance from Edge
+  - [x] Construct Properties
+  - [x] Typed Getters
+  - [x] Setter
+
+### Reactive Models
+
+- [x] `ConstValue`
+- [x] `Connector`
+  - [x] `Connector::from_relation(ReactiveRelationInstance)`
+  - [x] `Connector::new(OutboundEntity, OutboundPropName, InboundEntity, InboundPropName)`
+  - [x] `Connector::connect`
+  - [x] `Connector::disconnect`
+- [ ] `LogicalGate`
 
 ### APIs
 
@@ -134,6 +152,13 @@ essential ones.
 - [ ] `RelationTypeManager`
 - [ ] `RelationInstanceManager`
 - [ ] `ReactiveRelationInstanceManager`
+- [ ] `FlowManager`
+  - [ ] List of entity_ids
+  - [ ] List of relation_ids
+  - [ ] Register Entity Instance for Flow
+  - [ ] Register Relation Instance for Flow
+  - [ ] Import / Export
+    - [ ] Full exports of all entity instances and relation instances
 
 ### Service Layer Implementations
 
@@ -176,13 +201,42 @@ essential ones.
     - [x] Create Vertex
   - [x] Export EntityInstance to JSON
     - [x] Create EntityInstance from Vertex
-- [ ] Reactive Entity Instance Manager
-  - [x] Hold references of "ReactiveEntityInstance"
+- [ ] `ReactiveEntityInstanceManager`
+  - [x] Hold references of `ReactiveEntityInstance`
     * These are the actually "running" / "living" instances
+  - [ ] Create `ReactiveEntityInstance` by UUID
+    - [ ] Get Entity Instance by UUID from `EntityInstanceManager`
+    - [ ] Construct Specialized `ReactiveEntityInstance` by TYPE
+      - [ ] ConstValue
+      - [ ] Logical Gate (AND)
   - [ ] Check if id exists in HashMap (must not exist)
+  - [ ] Check if id exists in Datastore -> Manager
+- [ ] `ReactiveRelationInstanceManager`
+  - [x] Hold references of `ReactiveRelationInstance`
+    * These are the actually "running" / "living" instances
+  - [ ] Create `ReactiveRelationInstance` by UUID
+    - [ ] Get Relation Instance by UUID from `RelationInstanceManager`
+    - [ ] Construct Specialized `ReactiveRelationInstance` by TYPE
+      - [ ] Connector
+- [ ] `FlowManager`
+  - [ ] Map of `Flows`
+    - [ ] List of entity_ids
+    - [ ] List of relation_ids
+  - [ ] Register Entity Instance for Flow (= register UUID)
+  - [ ] Register Relation Instance for Flow (= register UUID)
+  - [ ] Export
+    - [ ] For each registered EntityInstance UUID: Load the `EntityInstance` via `EntityInstanceManager`
+    - [ ] For each registered RelationInstance UUID: Load the `RelationInstance` via `RelationInstanceManager`
+    - [ ] Construct one big JSON
+  - [ ] Import
+    - [ ] Read one big JSON
+    - [ ] For each `EntityInstance`: Create EntityInstance via `EntityInstanceManager`
+      - [ ] For each `RelationInstance`: Create EntityInstance via `RelationInstanceManager`
 
-### Logic Layer Implementations
+### Reactive Implementations
 
+- [ ] Const Value
+  - [ ] Num CPUs
 - [ ] Logical Gate
   - [ ] AND
 - [ ] Logical Gate Test

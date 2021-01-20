@@ -1,25 +1,18 @@
 use random_string::{RandomString, Charset, Charsets};
 use crate::model::ReactivePropertyInstance;
-use uuid::v1::Timestamp;
 use uuid::Uuid;
-use std::sync::{RwLock, Mutex, Arc};
-use bidule::Stream;
+use std::sync::{RwLock, Arc};
+use crate::bidule::Stream;
 use serde_json::json;
 use std::ops::DerefMut;
-use std::borrow::{BorrowMut, Borrow};
-use std::cell::RefCell;
-use std::rc::Rc;
 
 #[test]
 fn reactive_property_instance_test() {
-    let ts = Timestamp::from_rfc4122(1497624119, 0);
-    let uuid = Uuid::new_v1(ts, &[1, 2, 3, 4, 5, 6], ).unwrap();
+    let uuid = Uuid::new_v4();
 
-    let property_name =
-        RandomString::generate(10, &Charset::from_charsets(Charsets::Letters)).to_string();
+    let property_name = r_string();
 
-    let initial_property_value =
-        RandomString::generate(10, &Charset::from_charsets(Charsets::Letters)).to_string();
+    let initial_property_value = r_string();
 
     let initial_property_value_json = json!(initial_property_value);
 
@@ -37,8 +30,7 @@ fn reactive_property_instance_test() {
 
     // Set: Send to "stream", write inner "value"
 
-    let new_property_value =
-        RandomString::generate(10, &Charset::from_charsets(Charsets::Letters)).to_string();
+    let new_property_value = r_string();
     let new_property_value_json = json!(new_property_value);
 
     reactive_property_instance.set(new_property_value_json);
@@ -49,8 +41,7 @@ fn reactive_property_instance_test() {
 
     // Send: Send to "stream", do not change the inner "value" (!)
 
-    let send_property_value =
-        RandomString::generate(10, &Charset::from_charsets(Charsets::Letters)).to_string();
+    let send_property_value = r_string();
     let send_property_value_json = json!(send_property_value);
 
     reactive_property_instance.send(&send_property_value_json);
@@ -66,7 +57,7 @@ fn reactive_property_instance_test() {
     // Create an observer which sinks on a variable
 
     let observed_value_json = Arc::new(RwLock::new(reactive_property_instance.get()));
-    let mut inner_observed_value_json = Arc::clone(&observed_value_json);
+    let inner_observed_value_json = Arc::clone(&observed_value_json);
     reactive_property_instance.stream.read().unwrap().observe(move |value| {
         let mut writer = inner_observed_value_json.write().unwrap();
         *writer.deref_mut() = value.clone();
@@ -82,7 +73,7 @@ fn reactive_property_instance_test() {
     // Resend the last value
 
     let tick_value_json = Arc::new(RwLock::new(json!("")));
-    let mut i_tick_value_json = Arc::clone(&tick_value_json);
+    let i_tick_value_json = Arc::clone(&tick_value_json);
     reactive_property_instance.stream.read().unwrap().observe(move |value| {
         let mut writer = i_tick_value_json.write().unwrap();
         *writer.deref_mut() = value.clone();
@@ -97,17 +88,10 @@ fn reactive_property_instance_test() {
 
 #[test]
 fn create_reactive_property_instance_test() {
-    let ts = Timestamp::from_rfc4122(1497624119, 0);
-    let uuid = Uuid::new_v1(ts, &[1, 2, 3, 4, 5, 6], ).unwrap();
-
-    let property_name =
-        RandomString::generate(10, &Charset::from_charsets(Charsets::Letters)).to_string();
-
-    let initial_property_value =
-        RandomString::generate(10, &Charset::from_charsets(Charsets::Letters)).to_string();
-
+    let uuid = Uuid::new_v4();
+    let property_name = r_string();
+    let initial_property_value = r_string();
     let initial_property_value_json = json!(initial_property_value);
-
     let reactive_property_instance = ReactivePropertyInstance::new(
         uuid,
         property_name.clone(),
@@ -120,11 +104,8 @@ fn create_reactive_property_instance_test() {
 
     // Set: Send to "stream", write "value"
 
-    let new_property_value =
-        RandomString::generate(10, &Charset::from_charsets(Charsets::Letters)).to_string();
-
+    let new_property_value = r_string();
     let new_property_value_json = json!(new_property_value);
-
     reactive_property_instance.set(new_property_value_json);
 
     assert_eq!(new_property_value.as_str(), reactive_property_instance.value.read().unwrap().as_str().unwrap());
@@ -132,11 +113,8 @@ fn create_reactive_property_instance_test() {
 
     // Send: Send to "stream", do not change "value"
 
-    let send_property_value =
-        RandomString::generate(10, &Charset::from_charsets(Charsets::Letters)).to_string();
-
+    let send_property_value = r_string();
     let send_property_value_json = json!(send_property_value);
-
     reactive_property_instance.send(&send_property_value_json);
 
     assert_eq!(new_property_value.as_str(), reactive_property_instance.value.read().unwrap().as_str().unwrap());
@@ -146,3 +124,29 @@ fn create_reactive_property_instance_test() {
 
 }
 
+#[test]
+fn reactive_property_instance_typed_getter_test() {
+    let property_name = r_string();
+
+    let bool_value = json!(true);
+    assert_eq!(bool_value.as_bool().unwrap(), ReactivePropertyInstance::new(Uuid::new_v4(), property_name.clone(), bool_value).as_bool().unwrap());
+
+    let u64 = json!(123);
+    assert_eq!(123, ReactivePropertyInstance::new(Uuid::new_v4(), property_name.clone(), u64).as_u64().unwrap());
+
+    let i64 = json!(-123);
+    assert_eq!(-123, ReactivePropertyInstance::new(Uuid::new_v4(), property_name.clone(), i64).as_i64().unwrap());
+
+    let f64 = json!(-1.23);
+    assert_eq!(-1.23, ReactivePropertyInstance::new(Uuid::new_v4(), property_name.clone(), f64).as_f64().unwrap());
+
+    let rand_str =
+        RandomString::generate(10, &Charset::from_charsets(Charsets::Letters)).to_string();
+    let s = json!(rand_str.clone());
+    assert_eq!(rand_str.clone(), ReactivePropertyInstance::new(Uuid::new_v4(), property_name.clone(), s).as_string().unwrap());
+
+}
+
+fn r_string() -> String {
+    RandomString::generate(10, &Charset::from_charsets(Charsets::Letters)).to_string()
+}

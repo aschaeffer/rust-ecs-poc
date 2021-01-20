@@ -1,0 +1,8 @@
+{
+  "type": "value",
+  "id": "3cb4254a-0a99-41b8-b6f4-b5dc6e13f7ff",
+  "description": "num_cpus / num_cpus_physical",
+  "properties": {
+    "value": "1"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "type": "value",
+  "id": "ddde5b62-e85a-4b26-bfbd-70e51c2be815",
+  "description": "Number of CPUs",
+  "properties": {
+    "value": "1"
+  }
+}

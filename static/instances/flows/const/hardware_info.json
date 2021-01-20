@@ -1,0 +1,12 @@
+{
+  "id": "4faf3dad-3be5-45c7-b73e-96e5855b4c7d",
+  "description": "Threads per CPU Core",
+  "entities": [
+    "d5f6e205-ccc6-4b63-9675-014831ecbf3f",
+    "ddde5b62-e85a-4b26-bfbd-70e51c2be815",
+    "3cb4254a-0a99-41b8-b6f4-b5dc6e13f7ff",
+    "60f08554-1258-4347-93d2-b05c7f9b51d7"
+  ],
+  "relations": [
+  ]
+}

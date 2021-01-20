@@ -1,0 +1,11 @@
+{
+  "name": "value",
+  "components": [
+  ],
+  "properties": [
+    {
+      "name": "value",
+      "data_type": "*"
+    }
+  ]
+}

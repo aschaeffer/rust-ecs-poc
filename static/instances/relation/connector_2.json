@@ -1,0 +1,9 @@
+{
+  "outbound_id": "3cb4254a-0a99-41b8-b6f4-b5dc6e13f7ff",
+  "type": "connector",
+  "inbound_id": "d5f6e205-ccc6-4b63-9675-014831ecbf3f",
+  "properties": {
+    "outbound_property_name": "value",
+    "inbound_property_name": "divisor"
+  }
+}
