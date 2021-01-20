@@ -56,8 +56,6 @@ impl Connector<'_> {
                 self.handle_id = inbound.id.as_u128();
 
                 outbound_property.unwrap().stream.read().unwrap().observe_with_handle(move |value: &Value| {
-                    println!("Propagate value {}", &value.clone());
-                    // self.internal_value.read().unwrap().send(&value.clone());
                     inbound.set(inbound_property_name.clone(), value.clone());
                 }, self.handle_id);
             }
@@ -70,7 +68,6 @@ impl Connector<'_> {
         if outbound_property_name.is_some() {
             let outbound_property = self.relation.outbound.properties.get(&outbound_property_name.unwrap().clone());
             if outbound_property.is_some() {
-                println!("stopping connector with handle_id {}", self.handle_id);
                 outbound_property.unwrap().stream.read().unwrap().remove(self.handle_id);
             }
         }

@@ -298,7 +298,6 @@ where
     where
         F: 'a + FnMut(&Sig),
   {
-    println!("Observer with handle id {}", handle_id);
     match self.subscribers {
       DependentStreams::Own(ref subscribers) => {
         subscribers.borrow_mut().push(Box::new(
@@ -318,7 +317,6 @@ where
   /// Removes an subscriber.
   pub fn remove(&self, handle_id: u128)
   {
-    println!("Remove observer with handle_id {}", handle_id);
     match self.subscribers {
       DependentStreams::Own(ref subscribers) => {
         subscribers.borrow_mut().retain(| sub | {
@@ -341,7 +339,6 @@ where
     match self.subscribers {
       DependentStreams::Own(ref subscribers) => {
         for sub in subscribers.borrow_mut().iter_mut() {
-          println!("Calling handle {}", sub.0);
           sub.1(signal);
         }
       }
