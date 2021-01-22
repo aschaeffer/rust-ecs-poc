@@ -1,9 +1,0 @@
-{
-  "name": "logical_gate_result_2",
-  "properties": [
-    {
-      "name": "result_2",
-      "data_type": "bool"
-    }
-  ]
-}

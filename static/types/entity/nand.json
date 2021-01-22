@@ -1,5 +1,5 @@
 {
-  "name": "not",
+  "name": "nand",
   "components": [
     "logical_gate"
   ],

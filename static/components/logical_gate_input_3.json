@@ -1,9 +1,0 @@
-{
-  "name": "logical_gate_input_3",
-  "properties": [
-    {
-      "name": "bit_3",
-      "data_type": "bool"
-    }
-  ]
-}
