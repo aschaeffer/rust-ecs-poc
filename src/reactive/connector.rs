@@ -8,9 +8,21 @@ pub static TYPE_NAME_CONNECTOR: &'static str = "connector";
 pub static PROPERTY_NAME_OUTBOUND: &'static str = "outbound_property_name";
 pub static PROPERTY_NAME_INBOUND: &'static str = "inbound_property_name";
 
+/// A connector connects a property of the outbound entity instance with
+/// a property of the inbound entity instance.
+///
+/// In theory it's also possible to connect two properties of the same entity instance.
+///
+/// On construction the streams are connected. No type checks are performed.
+///
+/// On destruction of the connector, the stream will be removed.
 pub struct Connector<'a> {
+    /// The connector is a wrapper of a reactive relation instance.
     pub relation: Arc<ReactiveRelationInstance<'a>>,
 
+    /// The handle id is the numeric representation (u128) of the UUID of the inbound property
+    // TODO: make it a tuple (outbound_id, inbound_id) or use two handle_ids.
+    // TODO: This would result in a unique handle_id
     pub handle_id: u128,
 }
 
@@ -53,7 +65,7 @@ impl Connector<'_> {
             let inbound_property = self.relation.inbound.properties.get(&inbound_property_name.clone());
             if outbound_property.is_some() && inbound_property.is_some() {
                 let inbound = self.relation.inbound.clone();
-                self.handle_id = inbound.id.as_u128();
+                self.handle_id = inbound_property.unwrap().id.as_u128();
 
                 outbound_property.unwrap().stream.read().unwrap().observe_with_handle(move |value: &Value| {
                     inbound.set(inbound_property_name.clone(), value.clone());

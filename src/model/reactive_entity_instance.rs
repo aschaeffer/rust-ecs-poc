@@ -73,4 +73,7 @@ impl PropertyInstanceSetter for ReactiveEntityInstance<'_> {
             instance.set(value);
         }
     }
+
+    // TODO: fn set(&self, Map<String, Value>
+    // TODO: Set values transactional: first set all values internally, then send all affected streams
 }

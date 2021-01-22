@@ -46,7 +46,7 @@ The minimal valuable product (MVP) contains the following goals:
 - [x] As a developer I can create entities (with properties) using the API
 - [x] As a developer I can create relations (with properties) using the API
 - [x] As a developer I can connect and disconnect two properties which data flows from one to the other using the API
-- [ ] As a developer I can create an entity of type AND-operation which outputs the AND-operation of two inputs using the API
+- [x] As a developer I can create an entity of type AND-operation which outputs the AND-operation of two inputs using the API
 
 ### Flow Designer
 
@@ -99,6 +99,8 @@ essential ones.
 
 ### Models
 
+#### Base Models (Serializable)
+
 - [x] `Component`
   - [x] Serializable
 - [x] `EntityType`
@@ -112,6 +114,9 @@ essential ones.
 - [ ] `Flow`
   - [ ] Serializable
   - [ ] List of entity_
+
+#### Reactive Models (Non-Serializable, Managed by a Registry)
+
 - [x] `ReactivePropertyInstance`
   - [x] Not serializable
   - [x] Getter
@@ -132,15 +137,49 @@ essential ones.
   - [x] Typed Getters
   - [x] Setter
 
-### Reactive Models
+### Behaviours
+
+The idea is to wrap functionality around `ReactiveEntityInstance`s and `ReactiveRelationInstance`s.
+
+A `ReactiveEntityInstance` has properties with streams but doesn't do anything yet.
+
+The reactive behaviour implements the behaviour of a type. For example the AND
+
+#### `EntityInstanceBehaviour`s
 
 - [x] `ConstValue`
+  - [ ] Num CPUs
+    - [x] Unit-Test: Fill `ConstValue` with external data
+  - [x] Drop
+- [x] `LogicalGate`
+  - [x] AND
+    - [x] Unit-Test: One AND-Gate R = (B1 && B2)
+    - [x] Unit-Test: Three AND-Gates R = ((B1 && B2) && (B3 && B4)) -> Using Connectors
+  - [x] OR
+    - [x] Unit-Test: One OR-Gate R = (B1 || B2)
+    - [x] Unit-Test: Three OR-Gates R = ((B1 || B2) || (B3 || B4)) -> Using Connectors
+- [x] `ArithmeticGate`
+  - [x] ADD
+    - [x] Unit-Test: One ADD-Gate R = (N1 + N2)
+    - [x] Unit-Test: Three AND-Gates R = ((N1 + N2) + (N3 + N4)) -> Using Connectors
+  - [x] SUB
+    - [x] Unit-Test: One SUB-Gate R = (N1 - N2)
+    - [x] Unit-Test: Three SUB-Gates R = ((N1 - N2) - (N3 - N4)) -> Using Connectors
+- [ ] `TrigonometricOperation`
+  - [ ] SIN
+  - [ ] COS
+- [x] `SimpleClosure`
+  - [x] PRINT
+
+#### `RelationInstanceBehaviour`s
+
 - [x] `Connector`
   - [x] `Connector::from_relation(ReactiveRelationInstance)`
   - [x] `Connector::new(OutboundEntity, OutboundPropName, InboundEntity, InboundPropName)`
   - [x] `Connector::connect`
   - [x] `Connector::disconnect`
-- [ ] `LogicalGate`
+  - [ ] Optionally: Initially send value down the stream
+  - [ ] Optionally: Pause + Resume
 
 ### APIs
 
@@ -206,18 +245,27 @@ essential ones.
     * These are the actually "running" / "living" instances
   - [ ] Create `ReactiveEntityInstance` by UUID
     - [ ] Get Entity Instance by UUID from `EntityInstanceManager`
-    - [ ] Construct Specialized `ReactiveEntityInstance` by TYPE
+    - [ ] On Instantiation: Instantiate `ReactiveEntityInstanceBehaviour` by TYPE
       - [ ] ConstValue
       - [ ] Logical Gate (AND)
+      - [ ] Arithmetic Gate (AND)
+      - [ ] Print
   - [ ] Check if id exists in HashMap (must not exist)
   - [ ] Check if id exists in Datastore -> Manager
 - [ ] `ReactiveRelationInstanceManager`
-  - [x] Hold references of `ReactiveRelationInstance`
+  - [ ] Central registry of all `ReactiveRelationInstance`s
     * These are the actually "running" / "living" instances
   - [ ] Create `ReactiveRelationInstance` by UUID
     - [ ] Get Relation Instance by UUID from `RelationInstanceManager`
-    - [ ] Construct Specialized `ReactiveRelationInstance` by TYPE
+    - [ ] On Instantiation: Instantiate `ReactiveRelationInstanceBehaviour` by TYPE
       - [ ] Connector
+- [ ] `ConnectorManager`
+  - [ ] Central registry of all `Connectors`s
+  - [ ] (handle_id) = connect(uuid, prop_name, uuid, prop_name)
+  - [ ] connect(`ReactiveEntityInstance`, prop_name, `ReactiveEntityInstance`, prop_name)
+  - [ ] disconnect(uuid, prop_name, uuid, prop_name)
+  - [ ] connect(`ReactiveEntityInstance`, prop_name, `ReactiveEntityInstance`, prop_name)
+  
 - [ ] `FlowManager`
   - [ ] Map of `Flows`
     - [ ] List of entity_ids
@@ -232,23 +280,3 @@ essential ones.
     - [ ] Read one big JSON
     - [ ] For each `EntityInstance`: Create EntityInstance via `EntityInstanceManager`
       - [ ] For each `RelationInstance`: Create EntityInstance via `RelationInstanceManager`
-
-### Reactive Implementations
-
-- [ ] Const Value
-  - [ ] Num CPUs
-- [ ] Logical Gate
-  - [ ] AND
-- [ ] Logical Gate Test
-  - [ ] Create Reactive Entity Instance 1 with one boolean property
-  - [ ] Create Reactive Entity Instance 2 with one boolean property
-  - [ ] Create Reactive Entity Instance 3 with three boolean properties
-  - [ ] Create Reactive Entity Instance 4 with one boolean property
-  - [ ] Propagation: Connect Property of 1 with 3-1
-  - [ ] Propagation: Connect Property 2 with 3-2
-  - [ ] Propagation: Connect Property 3-3 with 4
-  - [ ] Behaviour: Logical Gate AND
-           ____
-1 --- 3_1 | 3  |
-          | && | 3_3 --- 4
-2 --- 3_2 |____|

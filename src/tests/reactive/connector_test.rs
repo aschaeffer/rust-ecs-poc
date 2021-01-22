@@ -53,6 +53,7 @@ fn connector_multiple_propagation_test () {
         e2_property_name.clone()
     ));
     let c_e1_e2 = Connector::from_relation(r_e1_e2.clone());
+    assert_ne!(0, c_e1_e2.handle_id);
 
     let r_e2_e3 = Arc::new(create_relation_instance_with_properties(
         e2.clone(),
@@ -61,8 +62,7 @@ fn connector_multiple_propagation_test () {
         e3_property_name.clone()
     ));
     let c_e2_e3 = Connector::from_relation(r_e2_e3.clone());
-
-
+    assert_ne!(0, c_e2_e3.handle_id);
 
     e1.set(e1_property_name.clone(), json!(true));
     assert!(e3.as_bool(e3_property_name.clone()).unwrap());
@@ -97,6 +97,7 @@ fn connector_destruction_test () {
         e2_property_name.clone()
     ));
     let c_e1_e2 = Connector::from_relation(r_e1_e2.clone());
+    assert_ne!(0, c_e1_e2.handle_id);
 
     let e3_default_string = "unmodified_e3".to_string();
     e1.set(e1_property_name.clone(), json!(e3_default_string.clone()));
@@ -108,6 +109,7 @@ fn connector_destruction_test () {
             e3_property_name.clone()
         ));
         let c_e2_e3 = Connector::from_relation(r_e2_e3.clone());
+        assert_ne!(0, c_e2_e3.handle_id);
 
         e1.set(e1_property_name.clone(), json!(true));
         assert!(e3.as_bool(e3_property_name.clone()).unwrap());
@@ -147,6 +149,7 @@ fn connector_connect_test () {
         e2.clone(),
         e2_property_name.clone()
     );
+    assert_ne!(0, c_e1_e2.handle_id);
     let e3_default_string = "unmodified_e3".to_string();
     e1.set(e1_property_name.clone(), json!(e3_default_string.clone()));
     {
@@ -156,6 +159,7 @@ fn connector_connect_test () {
             e3.clone(),
             e3_property_name.clone()
         );
+        assert_ne!(0, c_e2_e3.handle_id);
         e1.set(e1_property_name.clone(), json!(true));
         assert!(e3.as_bool(e3_property_name.clone()).unwrap());
         e1.set(e1_property_name.clone(), json!(false));
@@ -180,7 +184,7 @@ fn connector_connect_test () {
 
 }
 
-fn create_relation_instance_with_properties (
+pub(crate) fn create_relation_instance_with_properties (
     outbound_entity: Arc<ReactiveEntityInstance<'static>>,
     inbound_entity: Arc<ReactiveEntityInstance<'static>>,
     outbound_property_name: String,

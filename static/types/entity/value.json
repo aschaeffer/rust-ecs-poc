@@ -1,6 +1,7 @@
 {
   "name": "value",
   "components": [
+    "named"
   ],
   "properties": [
     {

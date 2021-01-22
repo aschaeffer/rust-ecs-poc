@@ -10,42 +10,60 @@ pub struct ConstValue<'a> {
     pub internal_value: RwLock<Stream<'a, Value>>,
 
     // TODO:
-    pub entity_instance: Arc<ReactiveEntityInstance<'a>>,
+    pub entity: Arc<ReactiveEntityInstance<'a>>,
+
+    pub handle_id: u128,
 }
 
 impl ConstValue<'_> {
-    pub fn new<'a>(entity_instance: Arc<ReactiveEntityInstance<'static>> /*, initial_value: Value */) -> ConstValue<'static> {
+    /// The name of the non-specialized type.
+    ///
+    /// There might exist more specialized types of ConstValue which
+    /// does more than storing the value within a defined property
+    /// and provide convenient accessors.
+    pub const DEFAULT_TYPE_NAME: &'static str = "value";
+
+    pub const PROPERTY_NAME_VALUE: &'static str = "value";
+
+    pub fn new<'a>(entity: Arc<ReactiveEntityInstance<'static>> /*, initial_value: Value */) -> ConstValue<'static> {
+        let handle_id = entity.properties.get(ConstValue::PROPERTY_NAME_VALUE).unwrap().id.as_u128();
+
         let const_value = ConstValue {
             internal_value: RwLock::new(Stream::new()),
-            entity_instance: Arc::clone(&entity_instance),
+            entity: Arc::clone(&entity),
+            handle_id
         };
 
-        let e = Arc::clone(&entity_instance);
+        let e = Arc::clone(&entity);
 
         // Connect the internal result with the stream of the result property
         const_value.internal_value.read().unwrap()
-            .observe(move |v| {
-                e.properties.get("value").unwrap().set(v.clone());
-            });
+            .observe_with_handle(move |v| {
+                e.properties.get(ConstValue::PROPERTY_NAME_VALUE).unwrap().set(v.clone());
+            }, handle_id);
 
         const_value
     }
 
     pub fn from(properties: VertexProperties) -> ConstValue<'static> {
-        let entity_instance = Arc::new(ReactiveEntityInstance::from(properties));
+        let entity = Arc::new(ReactiveEntityInstance::from(properties));
+
+        // TODO: Make this more simple: entity.get_handle_id(ConstValue::PROPERTY_NAME_VALUE)
+        let handle_id = entity.properties.get(ConstValue::PROPERTY_NAME_VALUE).unwrap().id.as_u128();
 
         let const_value = ConstValue {
             internal_value: RwLock::new(Stream::new()),
-            entity_instance: Arc::clone(&entity_instance),
+            entity: Arc::clone(&entity),
+            handle_id,
         };
 
-        let e = Arc::clone(&entity_instance);
+        let e = Arc::clone(&entity);
 
         // Connect the internal result with the stream of the result property
         const_value.internal_value.read().unwrap()
-            .observe(move |v| {
-                e.properties.get("value").unwrap().set(v.clone());
-            });
+            .observe_with_handle(move |v| {
+                e.properties.get(ConstValue::PROPERTY_NAME_VALUE).unwrap().set(v.clone());
+            }, handle_id);
 
         return const_value;
     }
@@ -55,10 +73,34 @@ impl ConstValue<'_> {
     }
 
     pub fn get(&self) -> Option<Value> {
-        self.entity_instance.properties.get("value")
+        self.entity.properties.get(ConstValue::PROPERTY_NAME_VALUE)
             .and_then(|p| Some(p.value.read().unwrap().clone()))
     }
+
+    pub fn disconnect(&self) {
+        println!("Disconnect ConstValue {}", self.handle_id);
+        self.entity.properties.get(ConstValue::PROPERTY_NAME_VALUE).unwrap()
+            .stream.read().unwrap().remove(self.handle_id);
+    }
 }
+
+/// Automatically disconnect streams on destruction
+///
+/// TODO: Unit Test
+impl Drop for ConstValue<'_> {
+    fn drop(&mut self) {
+        println!("Drop const value");
+        self.disconnect();
+    }
+}
+
+// TODO: Allow to specify a closure which provides the current value
+//       => 1. Once (num_cpus)
+//       => 2. Repeated (timestamp)
+// TODO: ConstantsManager
+//       => List of closures in HashMap<String, fn () -> Value>
+//       => Add constants dynamically
+
 
 // // TODO: move to a service and tests
 // fn init_const_num_cpus (properties: VertexProperties) -> ConstValue<'static> {

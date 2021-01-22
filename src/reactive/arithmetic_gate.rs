@@ -8,46 +8,46 @@ use std::sync::{RwLock, Arc};
 use uuid::Uuid;
 use std::str::FromStr;
 
-pub static PROPERTY_NAME_BIT_1: &'static str = "bit_1";
-pub static PROPERTY_NAME_BIT_2: &'static str = "bit_2";
+pub static PROPERTY_NAME_NUMBER_1: &'static str = "number_1";
+pub static PROPERTY_NAME_NUMBER_2: &'static str = "number_2";
 pub static PROPERTY_NAME_RESULT_1: &'static str = "result_1";
 
-pub static LHS_DEFAULT: bool = false;
-pub static RHS_DEFAULT: bool = false;
+pub static LHS_DEFAULT: i64 = 0;
+pub static RHS_DEFAULT: i64 = 0;
 
-pub type BinaryExpressionValue = ExpressionValue<bool>;
+pub type ArithmeticExpressionValue = ExpressionValue<i64>;
 
-pub type BinaryOperation = fn(bool, bool) -> bool;
+pub type ArithmeticOperation = fn(i64, i64) -> i64;
 
-/// Generic implementation of binary operations with two inputs (LHS,RHS) and one result.
+/// Generic implementation of arithmetic_gates operations with two inputs (LHS,RHS) and one result.
 ///
 /// The implementation is realized using reactive streams.
-pub struct LogicalGate<'a> {
-    pub lhs: RwLock<Stream<'a, BinaryExpressionValue>>,
+pub struct ArithmeticGate<'a> {
+    pub lhs: RwLock<Stream<'a, ArithmeticExpressionValue>>,
 
-    pub rhs: RwLock<Stream<'a, BinaryExpressionValue>>,
+    pub rhs: RwLock<Stream<'a, ArithmeticExpressionValue>>,
 
-    pub f: BinaryOperation,
+    pub f: ArithmeticOperation,
 
-    pub internal_result: RwLock<Stream<'a, bool>>,
+    pub internal_result: RwLock<Stream<'a, i64>>,
 
     pub entity: Arc<ReactiveEntityInstance<'a>>,
 
     pub handle_id: u128,
 }
 
-impl LogicalGate<'_> {
-    pub fn new<'a>(e: Arc<ReactiveEntityInstance<'static>>, f: BinaryOperation) -> LogicalGate<'static> {
-        let lhs = e.properties.get(PROPERTY_NAME_BIT_1).unwrap()
+impl ArithmeticGate<'_> {
+    pub fn new<'a>(e: Arc<ReactiveEntityInstance<'static>>, f: ArithmeticOperation) -> ArithmeticGate<'static> {
+        let lhs = e.properties.get(PROPERTY_NAME_NUMBER_1).unwrap()
             .stream.read().unwrap()
-            .map(|v| match v.as_bool() {
+            .map(|v| match v.as_i64() {
                 Some(b) => (OperatorPosition::LHS, b),
                 None => (OperatorPosition::LHS, LHS_DEFAULT),
             });
-        let rhs = e.properties.get(PROPERTY_NAME_BIT_2).unwrap()
+        let rhs = e.properties.get(PROPERTY_NAME_NUMBER_2).unwrap()
             .stream.read().unwrap()
-            .map(|v| -> BinaryExpressionValue {
-                match v.as_bool() {
+            .map(|v| -> ArithmeticExpressionValue {
+                match v.as_i64() {
                     Some(b) => (OperatorPosition::RHS, b),
                     None => (OperatorPosition::RHS, RHS_DEFAULT),
                 }
@@ -67,7 +67,7 @@ impl LogicalGate<'_> {
         // TODO: handle result based on outbound property id and inbound property id
         let handle_id = e.properties.get(PROPERTY_NAME_RESULT_1).unwrap().id.as_u128();
 
-        let logical_gate = LogicalGate {
+        let arthmetic_gate = ArithmeticGate {
             lhs: RwLock::new(lhs),
             rhs: RwLock::new(rhs),
             f,
@@ -77,13 +77,13 @@ impl LogicalGate<'_> {
         };
 
         // Connect the internal result with the stream of the result property
-        logical_gate.internal_result.read().unwrap()
+        arthmetic_gate.internal_result.read().unwrap()
             .observe_with_handle(move |v| {
                 println!("[LG] Setting result {}", v);
                 e.set(PROPERTY_NAME_RESULT_1.to_string(), json!(*v));
             }, handle_id);
 
-        logical_gate
+        arthmetic_gate
     }
 
     /// TODO: Add guard: disconnect only if actually connected
@@ -99,23 +99,23 @@ impl LogicalGate<'_> {
 }
 
 /// Automatically disconnect streams on destruction
-impl Drop for LogicalGate<'_> {
+impl Drop for ArithmeticGate<'_> {
     fn drop(&mut self) {
-        println!("Drop logical gate");
+        println!("Drop arithmetic_gates gate");
         self.disconnect();
     }
 }
 
-/// Creates a logical gate entity with 2 boolean inputs and 1 boolean output
-pub fn create_logical_gate_entity(type_name: String) -> ReactiveEntityInstance<'static> {
+/// Creates an arithmetic_gates gate entity with 2 numeric inputs and 1 numeric output
+pub fn create_arithmetic_gate_entity(type_name: String) -> ReactiveEntityInstance<'static> {
     let uuid = Uuid::new_v4();
     let t = Type::from_str(type_name.as_str()).unwrap();
     let property_lhs = NamedProperty {
-        name: PROPERTY_NAME_BIT_1.to_string(),
+        name: PROPERTY_NAME_NUMBER_1.to_string(),
         value: json!(false)
     };
     let property_rhs = NamedProperty {
-        name: PROPERTY_NAME_BIT_2.to_string(),
+        name: PROPERTY_NAME_NUMBER_2.to_string(),
         value: json!(false)
     };
     let property_result = NamedProperty {
@@ -134,4 +134,4 @@ pub fn create_logical_gate_entity(type_name: String) -> ReactiveEntityInstance<'
     ReactiveEntityInstance::from(vertex_properties)
 }
 
-// TODO: pub fn create_logical_gate_entity_with_id(type_name: String, id: String) -> ReactiveEntityInstance<'static> {
+// TODO: pub fn create_arithmetic_gate_entity_with_id(type_name: String, id: String) -> ReactiveEntityInstance<'static> {

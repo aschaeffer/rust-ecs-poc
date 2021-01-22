@@ -140,11 +140,15 @@ fn reactive_property_instance_typed_getter_test() {
     let f64 = json!(-1.23);
     assert_eq!(-1.23, ReactivePropertyInstance::new(Uuid::new_v4(), property_name.clone(), f64).as_f64().unwrap());
 
-    let rand_str =
-        RandomString::generate(10, &Charset::from_charsets(Charsets::Letters)).to_string();
+    let rand_str = r_string();
     let s = json!(rand_str.clone());
     assert_eq!(rand_str.clone(), ReactivePropertyInstance::new(Uuid::new_v4(), property_name.clone(), s).as_string().unwrap());
 
+    // TODO: unit test as_array
+    // let array = json!(["an", "array"]);
+
+    // TODO: unit test as_object
+    // let v = json!({ "a": "some string", "b": false });
 }
 
 fn r_string() -> String {

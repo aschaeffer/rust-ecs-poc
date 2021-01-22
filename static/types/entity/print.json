@@ -1,11 +1,11 @@
 {
-  "name": "value_number",
+  "name": "print",
   "components": [
   ],
   "properties": [
     {
       "name": "value",
-      "data_type": "number"
+      "data_type": "*"
     }
   ]
 }

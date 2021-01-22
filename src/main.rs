@@ -11,11 +11,12 @@ mod di;
 mod implementation;
 mod model;
 mod reactive;
+pub mod bidule;
+mod behaviour;
 
 #[cfg(test)]
 #[cfg_attr(tarpaulin, ignore)]
 mod tests;
-pub mod bidule;
 
 #[async_std::main]
 async fn main() {

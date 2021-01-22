@@ -13,11 +13,10 @@ fn const_value_test () {
     let uuid = Uuid::new_v4();
     let type_name = r_string();
     let t = Type::from_str(type_name.as_str()).unwrap();
-    let property_name = String::from("value");
     let initial_property_value = 0;
     let property_value_json = json!(initial_property_value);
     let property = NamedProperty {
-        name: property_name.clone(),
+        name: ConstValue::PROPERTY_NAME_VALUE.to_string(),
         value: property_value_json
     };
     let properties = vec![
@@ -29,7 +28,7 @@ fn const_value_test () {
     };
     // Create const value
     let const_value= ConstValue::from(vertex_properties);
-    let entity_instance = const_value.entity_instance.clone();
+    let entity_instance = const_value.entity.clone();
     // Retrieve number of cpus
     let cpus = num_cpus::get();
     // Set value of the constant value
@@ -37,7 +36,7 @@ fn const_value_test () {
     const_value.set(&json!(cpus));
     // Read value from entity instance property
     // let value = entity_instance.properties.get("value").unwrap().get().as_u64().unwrap() as usize;
-    let value = entity_instance.as_u64(property_name.clone()).unwrap() as usize;
+    let value = entity_instance.as_u64(ConstValue::PROPERTY_NAME_VALUE.to_string()).unwrap() as usize;
     // Check if entity instance properties has been set correctly
     assert_eq!(cpus, value);
     assert_ne!(initial_property_value, value);
@@ -54,14 +53,12 @@ fn create_const_value_test () {
 
     let t = Type::from_str(type_name.as_str()).unwrap();
 
-    let property_name = String::from("value");
-
     let initial_property_value = 0;
 
     let property_value_json = json!(initial_property_value);
 
     let property = NamedProperty {
-        name: property_name.clone(),
+        name: ConstValue::PROPERTY_NAME_VALUE.to_string(),
         value: property_value_json
     };
 
@@ -91,7 +88,7 @@ fn create_const_value_test () {
 
     // Read value from entity instance property
     // let value = entity_instance.properties.get("value").unwrap().get().as_u64().unwrap() as usize;
-    let value = entity_instance.as_u64(property_name.clone()).unwrap() as usize;
+    let value = entity_instance.as_u64(ConstValue::PROPERTY_NAME_VALUE.to_string()).unwrap() as usize;
 
     // Check if entity instance properties has been set correctly
     assert_eq!(cpus, value);
@@ -107,11 +104,10 @@ fn const_value_connect_streams_test () {
     let uuid = Uuid::new_v4();
     let type_name = r_string();
     let t = Type::from_str(type_name.as_str()).unwrap();
-    let property_name = String::from("value");
     let initial_property_value = 0;
     let property_value_json = json!(initial_property_value);
     let property = NamedProperty {
-        name: property_name.clone(),
+        name: ConstValue::PROPERTY_NAME_VALUE.to_string(),
         value: property_value_json
     };
     let properties = vec![
@@ -132,13 +128,13 @@ fn const_value_connect_streams_test () {
     assert_ne!(cpus, const_value_2.get().unwrap());
     assert_ne!(const_value_1.get().unwrap(), const_value_2.get().unwrap());
     // Connect
-    let e = const_value_2.entity_instance.clone();
+    let e = const_value_2.entity.clone();
     const_value_1
         .internal_value
         .read()
         .unwrap()
         .observe(move |v| {
-            e.set(property_name.clone(), v.clone());
+            e.set(ConstValue::PROPERTY_NAME_VALUE.to_string(), v.clone());
         });
     // Connected, not it should propagate the changes from const_value_1 to const_value_2
     const_value_1.set(&json!(cpus));
