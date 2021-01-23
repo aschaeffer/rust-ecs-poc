@@ -1,5 +1,5 @@
 {
-  "name": "tan",
+  "name": "to_degrees",
   "components": [
     "numeric_operation"
   ],

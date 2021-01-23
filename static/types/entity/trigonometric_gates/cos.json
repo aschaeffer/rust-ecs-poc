@@ -1,7 +1,7 @@
 {
   "name": "cos",
   "components": [
-    "numeric_operation_1_1"
+    "numeric_operation"
   ],
   "properties": [
   ]

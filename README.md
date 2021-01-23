@@ -280,3 +280,13 @@ The reactive behaviour implements the behaviour of a type. For example the AND
     - [ ] Read one big JSON
     - [ ] For each `EntityInstance`: Create EntityInstance via `EntityInstanceManager`
       - [ ] For each `RelationInstance`: Create EntityInstance via `RelationInstanceManager`
+
+### Constants
+
+- [ ] Math Constants https://doc.rust-lang.org/std/f64/consts/index.html
+- [ ] Environment Variables
+- [ ] Command Line Arguments
+
+### Numeric Operations
+
+- [ ] https://doc.rust-lang.org/std/primitive.f64.html

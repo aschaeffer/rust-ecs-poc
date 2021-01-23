@@ -1,7 +1,7 @@
 {
-  "name": "tan",
+  "name": "clamp",
   "components": [
-    "numeric_operation"
+    "numeric_gate_3"
   ],
   "properties": [
   ]

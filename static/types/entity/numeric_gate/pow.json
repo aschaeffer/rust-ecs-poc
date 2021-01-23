@@ -1,7 +1,7 @@
 {
-  "name": "tan",
+  "name": "pow",
   "components": [
-    "numeric_operation"
+    "numeric_gate"
   ],
   "properties": [
   ]

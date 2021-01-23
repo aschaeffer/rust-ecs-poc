@@ -1,0 +1,21 @@
+{
+  "name": "numeric_operation",
+  "properties": [
+    {
+      "name": "number_1",
+      "data_type": "number"
+    },
+    {
+      "name": "number_2",
+      "data_type": "number"
+    },
+    {
+      "name": "number_3",
+      "data_type": "number"
+    },
+    {
+      "name": "result",
+      "data_type": "number"
+    }
+  ]
+}

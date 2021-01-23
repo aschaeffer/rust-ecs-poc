@@ -1,5 +1,5 @@
 {
-  "name": "tan",
+  "name": "atan",
   "components": [
     "numeric_operation"
   ],

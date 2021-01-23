@@ -1,5 +1,5 @@
 {
-  "name": "tan",
+  "name": "trunc",
   "components": [
     "numeric_operation"
   ],
