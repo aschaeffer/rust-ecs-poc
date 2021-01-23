@@ -1,9 +1,9 @@
-mod connector_test;
-mod const_value_test;
-mod expression_test;
-mod logical_gate_test;
-mod arithmetic_gate_test;
-mod simple_closure_test;
+pub mod connector_test;
+pub mod const_value_test;
+pub mod expression_test;
+pub mod logical_gate_test;
+pub mod arithmetic_gate_test;
+pub mod simple_closure_test;
 
 pub use connector_test::*;
 pub use const_value_test::*;
