@@ -88,6 +88,7 @@ essential ones.
 - [x] Unit tests (`cargo test --package rust-ecs-poc --bin rust-ecs-poc  -- --nocapture --exact -Z unstable-options --show-output`)
 - [x] Source Code Format (`cargo fmt`)
 - [ ] Reference Documentation (rst, wiki)
+- [ ] Logging Framework
 - [ ] GitHub Actions
   - [x] Compile
   - [x] Run tests

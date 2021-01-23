@@ -4,6 +4,7 @@ use serde_json::{json, Value};
 use std::sync::Arc;
 use uuid::Uuid;
 use std::str::FromStr;
+use log::debug;
 
 // TODO: move into: impl SimpleClosure {}
 pub static PROPERTY_NAME_INPUT: &'static str = "input";
@@ -33,7 +34,7 @@ impl SimpleClosure<'_> {
     }
 
     pub fn disconnect(&self) {
-        println!("Disconnect SimpleClosure {}", self.handle_id);
+        debug!("Disconnect simple closure {}", self.handle_id);
         self.entity.properties.get(PROPERTY_NAME_INPUT).unwrap()
             .stream.read().unwrap().remove(self.handle_id);
     }
@@ -46,7 +47,7 @@ impl SimpleClosure<'_> {
 /// Automatically disconnect streams on destruction
 impl Drop for SimpleClosure<'_> {
     fn drop(&mut self) {
-        println!("Drop simple closure");
+        debug!("Drop simple closure");
         self.disconnect();
     }
 }

@@ -7,6 +7,7 @@ use serde_json::json;
 use std::sync::{RwLock, Arc};
 use uuid::Uuid;
 use std::str::FromStr;
+use log::debug;
 
 pub static PROPERTY_NAME_BIT_1: &'static str = "bit_1";
 pub static PROPERTY_NAME_BIT_2: &'static str = "bit_2";
@@ -79,7 +80,7 @@ impl LogicalGate<'_> {
         // Connect the internal result with the stream of the result property
         logical_gate.internal_result.read().unwrap()
             .observe_with_handle(move |v| {
-                println!("[LG] Setting result {}", v);
+                debug!("Setting result of logical gate: {}", v);
                 e.set(PROPERTY_NAME_RESULT_1.to_string(), json!(*v));
             }, handle_id);
 
@@ -88,7 +89,7 @@ impl LogicalGate<'_> {
 
     /// TODO: Add guard: disconnect only if actually connected
     pub fn disconnect(&self) {
-        println!("Disconnect {}", self.handle_id);
+        debug!("Disconnect logical gate {}", self.handle_id);
         self.internal_result.read().unwrap().remove(self.handle_id);
     }
 
@@ -101,7 +102,7 @@ impl LogicalGate<'_> {
 /// Automatically disconnect streams on destruction
 impl Drop for LogicalGate<'_> {
     fn drop(&mut self) {
-        println!("Drop logical gate");
+        debug!("Drop logical gate");
         self.disconnect();
     }
 }

@@ -85,14 +85,14 @@ fn test_export_import_component() {
         component_name.clone(),
         vec![PropertyType::new(String::from("x"), String::from("string"))],
     );
-    println!("Exporting to: {}", path.clone());
+    info!("Exporting to: {}", path.clone());
     application
         .component_manager
         .export(component_name.clone(), path.clone());
     assert!(application.component_manager.has(component_name.clone()));
     application.component_manager.delete(component_name.clone());
     assert!(!application.component_manager.has(component_name.clone()));
-    println!("Importing from: {}", path.clone());
+    info!("Importing from: {}", path.clone());
     application.component_manager.import(path.clone());
     assert!(application.component_manager.has(component_name.clone()));
 }

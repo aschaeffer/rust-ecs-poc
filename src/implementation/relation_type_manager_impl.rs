@@ -8,6 +8,7 @@ use std::fs::File;
 use std::io::BufReader;
 use std::sync::RwLock;
 use waiter_di::*;
+use log::{warn, debug, error};
 
 #[derive(RustEmbed)]
 #[folder = "static/types/relation"]
@@ -34,18 +35,17 @@ pub struct RelationTypeManagerImpl {
 #[provides]
 impl RelationTypeManager for RelationTypeManagerImpl {
     fn register(&self, mut relation_type: crate::model::RelationType) {
-        println!("Registered relation type {}", relation_type.name);
+        debug!("Registered relation type {}", relation_type.name);
         // Construct the type
         relation_type.t = Type::new(relation_type.name.clone()).unwrap();
         for component_name in relation_type.components.to_vec() {
             let component = self.component_manager.get(component_name.clone());
             if component.is_some() {
-                // println!("{} {:?}", component_name, component.unwrap());
                 relation_type
                     .properties
                     .append(&mut component.unwrap().properties);
             } else {
-                println!("No component named {}", component_name);
+                warn!("Relation type {} not fully initialized: No component named {}", relation_type.name.clone(), component_name);
             }
         }
         self.relation_types.0.write().unwrap().push(relation_type);
@@ -60,16 +60,15 @@ impl RelationTypeManager for RelationTypeManagerImpl {
     fn load_static_relation_types(&self) {
         for file in RelationTypeAsset::iter() {
             let filename = file.as_ref();
-            println!("Loading relation type from resource {}", filename);
+            debug!("Loading relation type from resource {}", filename);
             let asset = RelationTypeAsset::get(filename).unwrap();
             let result = std::str::from_utf8(asset.as_ref());
             if result.is_ok() {
                 let json_str = result.unwrap();
-                // println!("JSON {}", json_str);
                 let relation_type: crate::model::RelationType = serde_json::from_str(json_str).unwrap();
                 self.register(relation_type);
             } else {
-                println!("Could not decode UTF-8 {}", filename)
+                warn!("Could not decode UTF-8 {}", filename)
             }
         }
     }
@@ -133,7 +132,7 @@ impl RelationTypeManager for RelationTypeManagerImpl {
                 Ok(file) => {
                     let result = serde_json::to_writer_pretty(&file, &o_relation_type.unwrap());
                     if result.is_err() {
-                        println!(
+                        error!(
                             "Failed to export relation type {} to {}: {}",
                             name,
                             path,
@@ -142,7 +141,7 @@ impl RelationTypeManager for RelationTypeManagerImpl {
                     }
                 }
                 Err(error) => {
-                    println!(
+                    error!(
                         "Failed to export relation type {} to {}: {}",
                         name,
                         path,

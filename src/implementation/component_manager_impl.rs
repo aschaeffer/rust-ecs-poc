@@ -6,6 +6,7 @@ use std::fs::File;
 use std::io::BufReader;
 use std::sync::RwLock;
 use waiter_di::*;
+use log::{debug,error};
 
 #[derive(RustEmbed)]
 #[folder = "static/components"]
@@ -30,7 +31,7 @@ pub struct ComponentManagerImpl {
 impl ComponentManager for ComponentManagerImpl {
     fn register(&self, component: crate::model::Component) {
         if !self.has(component.name.clone()) {
-            println!("Registered component {}", component.name);
+            debug!("Registered component {}", component.name);
             self.components.0.write().unwrap().push(component);
         }
     }
@@ -38,7 +39,7 @@ impl ComponentManager for ComponentManagerImpl {
     fn load_static_components(&self) {
         for file in ComponentAsset::iter() {
             let filename = file.as_ref();
-            println!("Loading component from resource {}", filename);
+            debug!("Loading component from resource {}", filename);
             let asset = ComponentAsset::get(filename).unwrap();
             let result = std::str::from_utf8(asset.as_ref());
             if result.is_ok() {
@@ -46,7 +47,7 @@ impl ComponentManager for ComponentManagerImpl {
                 let component: crate::model::Component = serde_json::from_str(json_str).unwrap();
                 self.register(component);
             } else {
-                println!("Could not decode UTF-8 {}", filename)
+                error!("Could not decode UTF-8 {}", filename)
             }
         }
     }
@@ -98,7 +99,7 @@ impl ComponentManager for ComponentManagerImpl {
                 Ok(file) => {
                     let result = serde_json::to_writer_pretty(&file, &o_component.unwrap());
                     if result.is_err() {
-                        println!(
+                        error!(
                             "Failed to export component {} to {}: {}",
                             name,
                             path,
@@ -107,7 +108,7 @@ impl ComponentManager for ComponentManagerImpl {
                     }
                 }
                 Err(error) => {
-                    println!(
+                    error!(
                         "Failed to export component {} to {}: {}",
                         name,
                         path,

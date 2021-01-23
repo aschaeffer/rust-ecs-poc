@@ -165,14 +165,14 @@ fn test_export_import_entity_type() {
         vec![String::from("positionable")],
         vec![PropertyType::new(String::from("x"), String::from("string"))],
     );
-    println!("Exporting to: {}", path.clone());
+    info!("Exporting to: {}", path.clone());
     application
         .entity_type_manager
         .export(type_name.clone(), path.clone());
     assert!(application.entity_type_manager.has(type_name.clone()));
     application.entity_type_manager.delete(type_name.clone());
     assert!(!application.entity_type_manager.has(type_name.clone()));
-    println!("Importing from: {}", path.clone());
+    info!("Importing from: {}", path.clone());
     let result = application.entity_type_manager.import(path.clone());
     assert!(application.entity_type_manager.has(type_name.clone()));
     assert!(result.is_ok());

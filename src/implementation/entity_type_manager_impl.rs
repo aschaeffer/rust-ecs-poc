@@ -8,6 +8,7 @@ use std::fs::File;
 use std::io::BufReader;
 use std::sync::RwLock;
 use waiter_di::*;
+use log::{warn, debug, error};
 
 #[derive(RustEmbed)]
 #[folder = "static/types/entity"]
@@ -34,18 +35,17 @@ pub struct EntityTypeManagerImpl {
 #[provides]
 impl EntityTypeManager for EntityTypeManagerImpl {
     fn register(&self, mut entity_type: crate::model::EntityType) {
-        println!("Registered entity type {}", entity_type.name);
+        debug!("Registered entity type {}", entity_type.name);
         // Construct the type
         entity_type.t = Type::new(entity_type.name.clone()).unwrap();
         for component_name in entity_type.components.to_vec() {
             let component = self.component_manager.get(component_name.clone());
             if component.is_some() {
-                // println!("{} {:?}", component_name, component.unwrap());
                 entity_type
                     .properties
                     .append(&mut component.unwrap().properties);
             } else {
-                println!("No component named {}", component_name);
+                warn!("Entity type {} not fully initialized: No component named {}", entity_type.name.clone(), component_name);
             }
         }
         self.entity_types.0.write().unwrap().push(entity_type);
@@ -60,16 +60,15 @@ impl EntityTypeManager for EntityTypeManagerImpl {
     fn load_static_entity_types(&self) {
         for file in EntityTypeAsset::iter() {
             let filename = file.as_ref();
-            println!("Loading entity type from resource {}", filename);
+            debug!("Loading entity type from resource {}", filename);
             let asset = EntityTypeAsset::get(filename).unwrap();
             let result = std::str::from_utf8(asset.as_ref());
             if result.is_ok() {
                 let json_str = result.unwrap();
-                // println!("JSON {}", json_str);
                 let entity_type: crate::model::EntityType = serde_json::from_str(json_str).unwrap();
                 self.register(entity_type);
             } else {
-                println!("Could not decode UTF-8 {}", filename)
+                error!("Could not decode UTF-8 {}", filename)
             }
         }
     }
@@ -83,12 +82,8 @@ impl EntityTypeManager for EntityTypeManagerImpl {
     }
 
     fn get(&self, name: String) -> Option<EntityType> {
-        self.entity_types
-            .0
-            .read()
-            .unwrap()
-            .to_vec()
-            .into_iter()
+        self.entity_types.0.read().unwrap()
+            .to_vec().into_iter()
             .find(|entity_type| entity_type.name == name)
     }
 
@@ -101,10 +96,7 @@ impl EntityTypeManager for EntityTypeManagerImpl {
     }
 
     fn delete(&self, name: String) {
-        self.entity_types
-            .0
-            .write()
-            .unwrap()
+        self.entity_types.0.write().unwrap()
             .retain(|entity_type| entity_type.name != name);
     }
 
@@ -131,7 +123,7 @@ impl EntityTypeManager for EntityTypeManagerImpl {
                 Ok(file) => {
                     let result = serde_json::to_writer_pretty(&file, &o_entity_type.unwrap());
                     if result.is_err() {
-                        println!(
+                        error!(
                             "Failed to export entity type {} to {}: {}",
                             name,
                             path,
@@ -140,7 +132,7 @@ impl EntityTypeManager for EntityTypeManagerImpl {
                     }
                 }
                 Err(error) => {
-                    println!(
+                    error!(
                         "Failed to export entity type {} to {}: {}",
                         name,
                         path,

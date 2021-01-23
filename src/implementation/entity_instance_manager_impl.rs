@@ -11,8 +11,7 @@ use std::fs::File;
 use std::io::BufReader;
 use uuid::Uuid;
 use waiter_di::*;
-
-// This service operates on the graph database.
+use log::error;
 
 #[component]
 pub struct EntityInstanceManagerImpl {
@@ -103,7 +102,7 @@ impl EntityInstanceManager for EntityInstanceManagerImpl {
                 Ok(file) => {
                     let result = serde_json::to_writer_pretty(&file, &o_entity_instance.unwrap());
                     if result.is_err() {
-                        println!(
+                        error!(
                             "Failed to export entity instance {} to {}: {}",
                             id,
                             path,
@@ -112,7 +111,7 @@ impl EntityInstanceManager for EntityInstanceManagerImpl {
                     }
                 }
                 Err(error) => {
-                    println!(
+                    error!(
                         "Failed to export entity instance {} to {}: {}",
                         id,
                         path,

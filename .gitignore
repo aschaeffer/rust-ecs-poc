@@ -12,3 +12,4 @@ Cargo.lock
 tarpaulin-report.html
 default.profraw
 /.idea/
+/log/

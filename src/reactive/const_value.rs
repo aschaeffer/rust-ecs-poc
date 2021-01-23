@@ -3,6 +3,7 @@ use crate::bidule::Stream;
 use serde_json::Value;
 use crate::model::ReactiveEntityInstance;
 use indradb::VertexProperties;
+use log::debug;
 
 /// Generic implementation of an entity instance representing a constant
 /// The value is provided by a
@@ -78,7 +79,7 @@ impl ConstValue<'_> {
     }
 
     pub fn disconnect(&self) {
-        println!("Disconnect ConstValue {}", self.handle_id);
+        debug!("Disconnect ConstValue {}", self.handle_id);
         self.entity.properties.get(ConstValue::PROPERTY_NAME_VALUE).unwrap()
             .stream.read().unwrap().remove(self.handle_id);
     }
@@ -89,7 +90,7 @@ impl ConstValue<'_> {
 /// TODO: Unit Test
 impl Drop for ConstValue<'_> {
     fn drop(&mut self) {
-        println!("Drop const value");
+        debug!("Drop const value");
         self.disconnect();
     }
 }

@@ -7,6 +7,7 @@ use serde_json::json;
 use std::sync::{RwLock, Arc};
 use uuid::Uuid;
 use std::str::FromStr;
+use log::debug;
 
 pub static PROPERTY_NAME_NUMBER_1: &'static str = "number_1";
 pub static PROPERTY_NAME_NUMBER_2: &'static str = "number_2";
@@ -67,7 +68,7 @@ impl ArithmeticGate<'_> {
         // TODO: handle result based on outbound property id and inbound property id
         let handle_id = e.properties.get(PROPERTY_NAME_RESULT_1).unwrap().id.as_u128();
 
-        let arthmetic_gate = ArithmeticGate {
+        let arithmetic_gate = ArithmeticGate {
             lhs: RwLock::new(lhs),
             rhs: RwLock::new(rhs),
             f,
@@ -77,18 +78,18 @@ impl ArithmeticGate<'_> {
         };
 
         // Connect the internal result with the stream of the result property
-        arthmetic_gate.internal_result.read().unwrap()
+        arithmetic_gate.internal_result.read().unwrap()
             .observe_with_handle(move |v| {
-                println!("[LG] Setting result {}", v);
+                debug!("Setting result of arithmetic gate: {}", v);
                 e.set(PROPERTY_NAME_RESULT_1.to_string(), json!(*v));
             }, handle_id);
 
-        arthmetic_gate
+        arithmetic_gate
     }
 
     /// TODO: Add guard: disconnect only if actually connected
     pub fn disconnect(&self) {
-        println!("Disconnect {}", self.handle_id);
+        debug!("Disconnect arithmetic gate {}", self.handle_id);
         self.internal_result.read().unwrap().remove(self.handle_id);
     }
 
@@ -101,7 +102,7 @@ impl ArithmeticGate<'_> {
 /// Automatically disconnect streams on destruction
 impl Drop for ArithmeticGate<'_> {
     fn drop(&mut self) {
-        println!("Drop arithmetic_gates gate");
+        debug!("Drop arithmetic gate");
         self.disconnect();
     }
 }
