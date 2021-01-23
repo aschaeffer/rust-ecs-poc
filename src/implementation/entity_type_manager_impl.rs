@@ -1,4 +1,4 @@
-use crate::api::GraphDatabase;
+use crate::api::{GraphDatabase, EntityTypeImportError};
 use crate::api::{ComponentManager, EntityTypeManager};
 use crate::model::{EntityType, PropertyType};
 use async_trait::async_trait;
@@ -115,17 +115,19 @@ impl EntityTypeManager for EntityTypeManagerImpl {
             .retain(|entity_type| entity_type.name != name);
     }
 
-    // TODO: return type_name of the EntityType
-    fn import(&self, path: String) {
+    fn import(&self, path: String) -> Result<EntityType, EntityTypeImportError> {
         let file = File::open(path);
         if file.is_ok() {
             let file = file.unwrap();
             let reader = BufReader::new(file);
             let entity_type = serde_json::from_reader(reader);
             if entity_type.is_ok() {
-                self.register(entity_type.unwrap());
+                let entity_type: EntityType = entity_type.unwrap();
+                self.register(entity_type.clone());
+                return Ok(entity_type.clone());
             }
         }
+        Err(EntityTypeImportError.into())
     }
 
     fn export(&self, name: String, path: String) {

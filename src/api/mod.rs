@@ -6,6 +6,7 @@ pub use graph_database::*;
 pub use property_instance_accessor::*;
 pub use reactive_entity_instance_manager::*;
 pub use reactive_property_instance_manager::*;
+pub use relation_type_manager::*;
 pub use system_constants_initializer::*;
 
 pub mod component_manager;
@@ -16,4 +17,5 @@ pub mod graph_database;
 pub mod property_instance_accessor;
 pub mod reactive_entity_instance_manager;
 pub mod reactive_property_instance_manager;
+pub mod relation_type_manager;
 pub mod system_constants_initializer;

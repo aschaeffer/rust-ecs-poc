@@ -30,6 +30,7 @@ pub struct ApplicationImpl {
     pub entity_type_manager: Wrc<dyn EntityTypeManager>,
     pub entity_instance_vertex_manager: Wrc<dyn EntityInstanceVertexManager>,
     pub entity_instance_manager: Wrc<dyn EntityInstanceManager>,
+    pub relation_type_manager: Wrc<dyn RelationTypeManager>,
     pub system_constants_initializer: Wrc<dyn SystemConstantsInitializer>,
     pub graph_database: Wrc<dyn GraphDatabase>,
 }
@@ -40,6 +41,7 @@ impl Application for ApplicationImpl {
     fn init(&self) {
         self.component_manager.load_static_components();
         self.entity_type_manager.load_static_entity_types();
+        self.relation_type_manager.load_static_relation_types();
         self.system_constants_initializer.activate();
     }
 

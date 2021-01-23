@@ -34,7 +34,7 @@ The minimal valuable product (MVP) contains the following goals:
 - [ ] The entity system is a network of properties which are connected with connectors in order to control the data flow
   from one entity to another
 - [ ] The underlying data store technology is a graph database which is embedded in the application
-- [ ] The entities are reactive. This means the properties of the entity/relation are processed internally using
+- [ ] The entities/relations are reactive. This means the properties of the entity/relation are processed internally using
   reactive technologies (for example an entity of type AND outputs the result of a boolean and operation of the
   two boolean inputs)
 
@@ -188,7 +188,7 @@ The reactive behaviour implements the behaviour of a type. For example the AND
 - [x] `EntityInstanceVertexManager`
 - [x] `EntityInstanceManager`
 - [x] `ReactiveEntityInstanceManager`
-- [ ] `RelationTypeManager`
+- [x] `RelationTypeManager`
 - [ ] `RelationInstanceManager`
 - [ ] `ReactiveRelationInstanceManager`
 - [ ] `FlowManager`

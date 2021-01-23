@@ -3,7 +3,7 @@ use indradb::Type;
 use serde::{Deserialize, Serialize};
 use std::str::FromStr;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct RelationType {
     pub name: String,
 
