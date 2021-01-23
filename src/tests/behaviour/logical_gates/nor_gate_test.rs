@@ -1,8 +1,6 @@
 use crate::api::{PropertyInstanceGetter, PropertyInstanceSetter};
 use crate::behaviour::{ReactiveEntityInstanceBehaviour, NorGate};
-use crate::reactive::{PROPERTY_NAME_RESULT_1, PROPERTY_NAME_BIT_1, Connector, PROPERTY_NAME_BIT_2};
-use crate::tests::create_relation_instance_with_properties;
-use std::sync::Arc;
+use crate::reactive::{PROPERTY_NAME_RESULT_1, PROPERTY_NAME_BIT_1, PROPERTY_NAME_BIT_2};
 use serde_json::json;
 
 #[test]

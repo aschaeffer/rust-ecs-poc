@@ -28,6 +28,7 @@ fn print_value_test () {
             PROPERTY_NAME_INPUT.to_string()
         ));
         let c_const_value_to_print_value_1 = Connector::from_relation(r_const_value_to_print_value_1.clone());
+        assert_ne!(0, c_const_value_to_print_value_1.handle_id);
 
         let r_const_value_to_print_value_2 = Arc::new(create_relation_instance_with_properties(
             entity.clone(),
@@ -36,6 +37,7 @@ fn print_value_test () {
             PROPERTY_NAME_INPUT.to_string()
         ));
         let c_const_value_to_print_value_2 = Connector::from_relation(r_const_value_to_print_value_2.clone());
+        assert_ne!(0, c_const_value_to_print_value_2.handle_id);
 
         let r_const_value_to_print_value_3 = Arc::new(create_relation_instance_with_properties(
             entity.clone(),
@@ -44,6 +46,7 @@ fn print_value_test () {
             PROPERTY_NAME_INPUT.to_string()
         ));
         let c_const_value_to_print_value_3 = Connector::from_relation(r_const_value_to_print_value_3.clone());
+        assert_ne!(0, c_const_value_to_print_value_3.handle_id);
 
         // Now const_value is connected to all three instances of print_value
         const_value.set(&json!("This is printed three times :-)))"));

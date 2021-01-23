@@ -9,7 +9,7 @@ impl NotGate {
     pub const TYPE_NAME: &'static str = "xor";
 
     // TODO: not optimal: ignores the second input
-    pub const OPERATION: BinaryOperation = |lhs, rhs| !lhs;
+    pub const OPERATION: BinaryOperation = |lhs, _rhs| !lhs;
 }
 impl<'a> ReactiveEntityInstanceBehaviour<'a, LogicalGate<'static>> for NotGate {
     fn new() -> Result<LogicalGate<'static>, BehaviourCreationError> {
