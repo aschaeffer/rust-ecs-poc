@@ -58,7 +58,6 @@ impl RelationTypeManager for RelationTypeManagerImpl {
     }
 
     fn load_static_relation_types(&self) {
-        // self.component_manager.list_components();
         for file in RelationTypeAsset::iter() {
             let filename = file.as_ref();
             println!("Loading relation type from resource {}", filename);
@@ -77,12 +76,6 @@ impl RelationTypeManager for RelationTypeManagerImpl {
 
     fn get_relation_types(&self) -> Vec<crate::model::RelationType> {
         self.relation_types.0.read().unwrap().to_vec()
-    }
-
-    fn list_relation_types(&self) {
-        for relation_type in self.relation_types.0.read().unwrap().iter() {
-            println!("Relation Type {}: {:?}", relation_type.name, relation_type);
-        }
     }
 
     fn has(&self, name: String) -> bool {

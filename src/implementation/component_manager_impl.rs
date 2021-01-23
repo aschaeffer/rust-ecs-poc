@@ -56,23 +56,13 @@ impl ComponentManager for ComponentManagerImpl {
         self.components.0.read().unwrap().to_vec()
     }
 
-    fn list_components(&self) {
-        for component in self.components.0.read().unwrap().to_vec().iter() {
-            println!("Component {}: {:?}", component.name.clone(), component);
-        }
-    }
-
     fn has(&self, name: String) -> bool {
         self.get(name).is_some()
     }
 
     fn get(&self, name: String) -> Option<crate::model::Component> {
-        self.components
-            .0
-            .read()
-            .unwrap()
-            .to_vec()
-            .into_iter()
+        self.components.0.read().unwrap()
+            .to_vec().into_iter()
             .find(|component| component.name == name)
     }
 
@@ -84,10 +74,7 @@ impl ComponentManager for ComponentManagerImpl {
     }
 
     fn delete(&self, name: String) {
-        self.components
-            .0
-            .write()
-            .unwrap()
+        self.components.0.write().unwrap()
             .retain(|component| component.name != name);
     }
 

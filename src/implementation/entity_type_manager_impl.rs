@@ -58,7 +58,6 @@ impl EntityTypeManager for EntityTypeManagerImpl {
     }
 
     fn load_static_entity_types(&self) {
-        // self.component_manager.list_components();
         for file in EntityTypeAsset::iter() {
             let filename = file.as_ref();
             println!("Loading entity type from resource {}", filename);
@@ -77,12 +76,6 @@ impl EntityTypeManager for EntityTypeManagerImpl {
 
     fn get_entity_types(&self) -> Vec<crate::model::EntityType> {
         self.entity_types.0.read().unwrap().to_vec()
-    }
-
-    fn list_entity_types(&self) {
-        for entity_type in self.entity_types.0.read().unwrap().iter() {
-            println!("Entity Type {}: {:?}", entity_type.name, entity_type);
-        }
     }
 
     fn has(&self, name: String) -> bool {

@@ -9,7 +9,6 @@ pub trait RelationTypeManager: Send + Sync {
     fn register(&self, entity_type: RelationType);
     fn load_static_relation_types(&self);
     fn get_relation_types(&self) -> Vec<RelationType>;
-    fn list_relation_types(&self);
 
     fn has(&self, name: String) -> bool;
     fn get(&self, name: String) -> Option<RelationType>;
