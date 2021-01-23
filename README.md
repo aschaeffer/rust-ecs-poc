@@ -88,7 +88,7 @@ essential ones.
 - [x] Unit tests (`cargo test --package rust-ecs-poc --bin rust-ecs-poc  -- --nocapture --exact -Z unstable-options --show-output`)
 - [x] Source Code Format (`cargo fmt`)
 - [ ] Reference Documentation (rst, wiki)
-- [ ] Logging Framework
+- [x] Logging Framework
 - [ ] GitHub Actions
   - [x] Compile
   - [x] Run tests
@@ -149,8 +149,7 @@ The reactive behaviour implements the behaviour of a type. For example the AND
 #### `EntityInstanceBehaviour`s
 
 - [x] `ConstValue`
-  - [ ] Num CPUs
-    - [x] Unit-Test: Fill `ConstValue` with external data
+  - [x] Unit-Test: Fill `ConstValue` with external data
   - [x] Drop
 - [x] `LogicalGate`
   - [x] AND
