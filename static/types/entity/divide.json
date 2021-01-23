@@ -1,19 +1,8 @@
 {
   "name": "divide",
   "components": [
+    "arithmetic_gate"
   ],
   "properties": [
-    {
-      "name": "dividend",
-      "data_type": "number"
-    },
-    {
-      "name": "divisor",
-      "data_type": "number"
-    },
-    {
-      "name": "quotient",
-      "data_type": "number"
-    }
   ]
 }

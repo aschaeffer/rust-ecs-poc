@@ -1,5 +1,5 @@
 {
-  "name": "logical_gate_input_1",
+  "name": "logical_gate",
   "properties": [
     {
       "name": "bit_1",

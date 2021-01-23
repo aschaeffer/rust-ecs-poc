@@ -1,7 +1,7 @@
 {
   "name": "multiply",
   "components": [
-    "numeric_operation_2_1"
+    "arithmetic_gate"
   ],
   "properties": [
   ]
