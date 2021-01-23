@@ -1,0 +1,8 @@
+{
+  "name": "replace",
+  "components": [
+    "string_gate"
+  ],
+  "properties": [
+  ]
+}

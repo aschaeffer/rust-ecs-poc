@@ -1,12 +1,8 @@
 {
-  "name": "string_operation_2_1",
+  "name": "string_operation",
   "properties": [
     {
       "name": "string_1",
-      "data_type": "string"
-    },
-    {
-      "name": "string_2",
       "data_type": "string"
     },
     {

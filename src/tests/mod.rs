@@ -11,3 +11,6 @@ mod model;
 mod reactive;
 mod utils;
 mod bidule;
+
+#[test]
+fn all_tests () {}

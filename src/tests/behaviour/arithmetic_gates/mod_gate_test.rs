@@ -4,12 +4,12 @@ use crate::reactive::arithmetic_gate::{PROPERTY_NAME_NUMBER_1, PROPERTY_NAME_NUM
 use serde_json::json;
 
 #[test]
-fn mod_gate_test () {
+fn modulo_gate_test() {
     // Now it's very convenient to create AND-Gates
-    let mod_gate = ModGate::new().unwrap();
+    let modulo_gate = ModGate::new().unwrap();
 
     // You can get the inner ReactiveEntityInstance from a LogicalGate
-    let modulo = mod_gate.entity.clone();
+    let modulo = modulo_gate.entity.clone();
 
     modulo.set(PROPERTY_NAME_NUMBER_1.to_string(), json!(12));
     modulo.set(PROPERTY_NAME_NUMBER_2.to_string(), json!(5));
