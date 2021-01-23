@@ -1,5 +1,5 @@
 {
-  "name": "numeric_operation",
+  "name": "numeric_gate",
   "properties": [
     {
       "name": "number_1",

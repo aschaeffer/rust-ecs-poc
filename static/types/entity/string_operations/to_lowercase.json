@@ -1,7 +1,7 @@
 {
-  "name": "equals_string",
+  "name": "to_lowercase",
   "components": [
-    "compare_strings"
+    "string_operation"
   ],
   "properties": [
   ]

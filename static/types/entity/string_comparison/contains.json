@@ -1,0 +1,8 @@
+{
+  "name": "contains",
+  "components": [
+    "string_comparison"
+  ],
+  "properties": [
+  ]
+}

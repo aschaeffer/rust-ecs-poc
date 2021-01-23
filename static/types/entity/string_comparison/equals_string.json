@@ -1,0 +1,8 @@
+{
+  "name": "equals_string",
+  "components": [
+    "string_comparison"
+  ],
+  "properties": [
+  ]
+}

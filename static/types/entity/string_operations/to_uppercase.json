@@ -1,0 +1,8 @@
+{
+  "name": "to_uppercase",
+  "components": [
+    "string_operation"
+  ],
+  "properties": [
+  ]
+}

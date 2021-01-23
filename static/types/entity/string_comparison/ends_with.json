@@ -1,0 +1,8 @@
+{
+  "name": "ends_with",
+  "components": [
+    "string_comparison"
+  ],
+  "properties": [
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "name": "starts_with",
+  "components": [
+    "string_comparison"
+  ],
+  "properties": [
+  ]
+}

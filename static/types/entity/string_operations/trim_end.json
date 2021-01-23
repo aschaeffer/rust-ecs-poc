@@ -1,0 +1,8 @@
+{
+  "name": "trim_end",
+  "components": [
+    "string_operation"
+  ],
+  "properties": [
+  ]
+}
