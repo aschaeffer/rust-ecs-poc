@@ -1,0 +1,8 @@
+{
+  "name": "multiply",
+  "components": [
+    "arithmetic_gate"
+  ],
+  "properties": [
+  ]
+}
