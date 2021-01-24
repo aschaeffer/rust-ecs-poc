@@ -1,6 +1,6 @@
 use crate::api::{PropertyInstanceGetter, PropertyInstanceSetter};
 use crate::behaviour::{NandGate, ReactiveEntityInstanceBehaviour};
-use crate::reactive::{PROPERTY_NAME_RESULT_1, PROPERTY_NAME_BIT_1, PROPERTY_NAME_BIT_2};
+use crate::reactive::logical_gate::{PROPERTY_NAME_BIT_1,PROPERTY_NAME_BIT_2,PROPERTY_NAME_RESULT_1};
 use serde_json::json;
 
 #[test]

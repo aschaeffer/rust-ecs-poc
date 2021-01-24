@@ -16,19 +16,19 @@ pub static PROPERTY_NAME_RESULT_1: &'static str = "result_1";
 pub static LHS_DEFAULT: bool = false;
 pub static RHS_DEFAULT: bool = false;
 
-pub type BinaryExpressionValue = ExpressionValue<bool>;
+pub type LogicalGateExpressionValue = ExpressionValue<bool>;
 
-pub type BinaryOperation = fn(bool, bool) -> bool;
+pub type LogicalGateFunction = fn(bool, bool) -> bool;
 
 /// Generic implementation of binary operations with two inputs (LHS,RHS) and one result.
 ///
 /// The implementation is realized using reactive streams.
 pub struct LogicalGate<'a> {
-    pub lhs: RwLock<Stream<'a, BinaryExpressionValue>>,
+    pub lhs: RwLock<Stream<'a, LogicalGateExpressionValue>>,
 
-    pub rhs: RwLock<Stream<'a, BinaryExpressionValue>>,
+    pub rhs: RwLock<Stream<'a, LogicalGateExpressionValue>>,
 
-    pub f: BinaryOperation,
+    pub f: LogicalGateFunction,
 
     pub internal_result: RwLock<Stream<'a, bool>>,
 
@@ -38,7 +38,7 @@ pub struct LogicalGate<'a> {
 }
 
 impl LogicalGate<'_> {
-    pub fn new<'a>(e: Arc<ReactiveEntityInstance<'static>>, f: BinaryOperation) -> LogicalGate<'static> {
+    pub fn new<'a>(e: Arc<ReactiveEntityInstance<'static>>, f: LogicalGateFunction) -> LogicalGate<'static> {
         let lhs = e.properties.get(PROPERTY_NAME_BIT_1).unwrap()
             .stream.read().unwrap()
             .map(|v| match v.as_bool() {
@@ -47,7 +47,7 @@ impl LogicalGate<'_> {
             });
         let rhs = e.properties.get(PROPERTY_NAME_BIT_2).unwrap()
             .stream.read().unwrap()
-            .map(|v| -> BinaryExpressionValue {
+            .map(|v| -> LogicalGateExpressionValue {
                 match v.as_bool() {
                     Some(b) => (OperatorPosition::RHS, b),
                     None => (OperatorPosition::RHS, RHS_DEFAULT),

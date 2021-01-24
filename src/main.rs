@@ -1,4 +1,5 @@
 #![feature(unsized_tuple_coercion)]
+#![feature(associated_consts)]
 
 use waiter_di::*;
 
