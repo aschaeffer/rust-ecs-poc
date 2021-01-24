@@ -165,11 +165,12 @@ The reactive behaviour implements the behaviour of a type. For example the AND
   - [x] SUB
     - [x] Unit-Test: One SUB-Gate R = (N1 - N2)
     - [x] Unit-Test: Three SUB-Gates R = ((N1 - N2) - (N3 - N4)) -> Using Connectors
-- [ ] `TrigonometricOperation`
-  - [ ] SIN
-  - [ ] COS
+- [x] `TrigonometricOperation`
+  - [x] SIN
+  - [x] COS
 - [x] `SimpleClosure`
   - [x] PRINT
+  - [x] LOG
 
 #### `RelationInstanceBehaviour`s
 
