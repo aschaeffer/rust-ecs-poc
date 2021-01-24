@@ -15,9 +15,6 @@ use log::error;
 
 #[component]
 pub struct EntityInstanceManagerImpl {
-    // component_manager: Wrc<dyn ComponentManager>,
-    //
-    // entity_type_manager: Wrc<dyn EntityTypeManager>,
     entity_instance_vertex_manager: Wrc<dyn EntityInstanceVertexManager>,
 }
 
