@@ -1,10 +1,10 @@
-use random_string::{RandomString, Charset, Charsets};
 use crate::model::ReactivePropertyInstance;
 use uuid::Uuid;
 use std::sync::{RwLock, Arc};
 use crate::bidule::Stream;
 use serde_json::json;
 use std::ops::DerefMut;
+use crate::tests::utils::r_string;
 
 #[test]
 fn reactive_property_instance_test() {
@@ -19,7 +19,7 @@ fn reactive_property_instance_test() {
     let reactive_property_instance = ReactivePropertyInstance {
         id: uuid,
         name: property_name.clone(),
-        stream: RwLock::new(Stream::new()),
+        stream: Arc::new(RwLock::new(Stream::new())),
         value: RwLock::new(initial_property_value_json),
     };
 
@@ -151,6 +151,63 @@ fn reactive_property_instance_typed_getter_test() {
     // let v = json!({ "a": "some string", "b": false });
 }
 
-fn r_string() -> String {
-    RandomString::generate(10, &Charset::from_charsets(Charsets::Letters)).to_string()
+#[test]
+fn reactive_property_instance_eq_bool_test() {
+    let property_name = r_string();
+
+    let instance1 = ReactivePropertyInstance::new(Uuid::new_v4(), property_name.clone(), json!(true));
+    let instance2 = ReactivePropertyInstance::new(Uuid::new_v4(), property_name.clone(), json!(true));
+    assert!(instance1 == instance2);
+
+    let instance1 = ReactivePropertyInstance::new(Uuid::new_v4(), property_name.clone(), json!(false));
+    let instance2 = ReactivePropertyInstance::new(Uuid::new_v4(), property_name.clone(), json!(true));
+    assert!(instance1 != instance2);
+
+    let instance1 = ReactivePropertyInstance::new(Uuid::new_v4(), property_name.clone(), json!(true));
+    let instance2 = ReactivePropertyInstance::new(Uuid::new_v4(), property_name.clone(), json!(false));
+    assert!(instance1 != instance2);
+
+    let instance1 = ReactivePropertyInstance::new(Uuid::new_v4(), property_name.clone(), json!(false));
+    let instance2 = ReactivePropertyInstance::new(Uuid::new_v4(), property_name.clone(), json!(false));
+    assert!(instance1 == instance2);
+}
+
+#[test]
+fn reactive_property_instance_eq_number_test() {
+    let property_name = r_string();
+
+    let instance1 = ReactivePropertyInstance::new(Uuid::new_v4(), property_name.clone(), json!(1));
+    let instance2 = ReactivePropertyInstance::new(Uuid::new_v4(), property_name.clone(), json!(1));
+    assert!(instance1 == instance2);
+
+    let instance1 = ReactivePropertyInstance::new(Uuid::new_v4(), property_name.clone(), json!(2));
+    let instance2 = ReactivePropertyInstance::new(Uuid::new_v4(), property_name.clone(), json!(3));
+    assert!(instance1 != instance2);
+}
+
+#[test]
+fn reactive_property_instance_eq_float_test() {
+    let property_name = r_string();
+
+    let instance1 = ReactivePropertyInstance::new(Uuid::new_v4(), property_name.clone(), json!(0.0));
+    let instance2 = ReactivePropertyInstance::new(Uuid::new_v4(), property_name.clone(), json!(0.0));
+    assert!(instance1 == instance2);
+
+    let instance1 = ReactivePropertyInstance::new(Uuid::new_v4(), property_name.clone(), json!(1.0));
+    let instance2 = ReactivePropertyInstance::new(Uuid::new_v4(), property_name.clone(), json!(1.1));
+    assert!(instance1 != instance2);
+}
+
+#[test]
+fn reactive_property_instance_eq_string_test() {
+    let property_name = r_string();
+    let property_value = r_string();
+
+    let instance1 = ReactivePropertyInstance::new(Uuid::new_v4(), property_name.clone(), json!(property_value.clone()));
+    let instance2 = ReactivePropertyInstance::new(Uuid::new_v4(), property_name.clone(), json!(property_value.clone()));
+    assert!(instance1 == instance2);
+
+    let instance1 = ReactivePropertyInstance::new(Uuid::new_v4(), property_name.clone(), json!(r_string()));
+    let instance2 = ReactivePropertyInstance::new(Uuid::new_v4(), property_name.clone(), json!(r_string()));
+    assert!(instance1 != instance2);
 }

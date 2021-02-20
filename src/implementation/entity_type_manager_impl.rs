@@ -1,4 +1,4 @@
-use crate::api::{GraphDatabase, EntityTypeImportError};
+use crate::api::{EntityTypeImportError, Lifecycle};
 use crate::api::{ComponentManager, EntityTypeManager};
 use crate::model::{EntityType, PropertyType};
 use async_trait::async_trait;
@@ -24,8 +24,6 @@ fn create_external_type_dependency() -> EntityTypes {
 
 #[component]
 pub struct EntityTypeManagerImpl {
-    graph_database: Wrc<dyn GraphDatabase>,
-
     component_manager: Wrc<dyn ComponentManager>,
 
     entity_types: EntityTypes,
@@ -41,20 +39,13 @@ impl EntityTypeManager for EntityTypeManagerImpl {
         for component_name in entity_type.components.to_vec() {
             let component = self.component_manager.get(component_name.clone());
             if component.is_some() {
-                entity_type
-                    .properties
+                entity_type.properties
                     .append(&mut component.unwrap().properties);
             } else {
                 warn!("Entity type {} not fully initialized: No component named {}", entity_type.name.clone(), component_name);
             }
         }
         self.entity_types.0.write().unwrap().push(entity_type);
-        // let result = self.graph_database.get_transaction();
-        // if result.is_ok() {
-        //     let transaction = result.unwrap();
-        //     let type_camera = Type::new("camera").unwrap();
-        //     // transaction.c
-        // }
     }
 
     fn load_static_entity_types(&self) {
@@ -87,10 +78,11 @@ impl EntityTypeManager for EntityTypeManagerImpl {
             .find(|entity_type| entity_type.name == name)
     }
 
-    fn create(&self, name: String, components: Vec<String>, properties: Vec<PropertyType>) {
+    fn create(&self, name: String, components: Vec<String>, behaviours: Vec<String>, properties: Vec<PropertyType>) {
         self.register(EntityType::new(
             name.clone(),
             components.to_vec(),
+            behaviours.to_vec(),
             properties.to_vec(),
         ));
     }
@@ -123,23 +115,25 @@ impl EntityTypeManager for EntityTypeManagerImpl {
                 Ok(file) => {
                     let result = serde_json::to_writer_pretty(&file, &o_entity_type.unwrap());
                     if result.is_err() {
-                        error!(
-                            "Failed to export entity type {} to {}: {}",
-                            name,
-                            path,
-                            result.err().unwrap()
-                        );
+                        error!("Failed to export entity type {} to {}: {}",
+                               name, path, result.err().unwrap());
                     }
                 }
                 Err(error) => {
-                    error!(
-                        "Failed to export entity type {} to {}: {}",
-                        name,
-                        path,
-                        error.to_string()
-                    );
+                    error!("Failed to export entity type {} to {}: {}",
+                           name, path, error.to_string());
                 }
             }
         }
+    }
+}
+
+impl Lifecycle for EntityTypeManagerImpl {
+    fn init(&self) {
+        self.load_static_entity_types();
+    }
+
+    fn shutdown(&self) {
+        // TODO: self.clear_entity_types();
     }
 }

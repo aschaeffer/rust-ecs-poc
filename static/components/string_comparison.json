@@ -1,5 +1,5 @@
 {
-  "name": "compare_strings",
+  "name": "string_comparison",
   "properties": [
     {
       "name": "string_1",

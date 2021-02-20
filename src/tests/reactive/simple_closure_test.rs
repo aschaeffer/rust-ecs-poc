@@ -3,8 +3,9 @@ use std::sync::{Arc, RwLock};
 use serde_json::{json, Value};
 
 use crate::api::PropertyInstanceSetter;
-use crate::reactive::simple_closure::{create_simple_closure_entity, PROPERTY_NAME_INPUT, SimpleClosure};
+use crate::reactive::entity::simple_closure::{SimpleClosureProperties, SimpleClosure, SimpleClosureReactiveEntityInstanceFactory as Factory};
 use std::ops::{Deref, DerefMut};
+use crate::model::ReactiveEntityInstanceFactory;
 
 #[test]
 fn simple_closure_test () {
@@ -13,10 +14,10 @@ fn simple_closure_test () {
     let value: Arc<RwLock<i64>> = Arc::new(RwLock::new(0));
 
     // The type name is irrelevant
-    let type_name = String::from("simple_closure");
+    let type_name = "simple_closure";
 
     // Construct an entity instance with one property named "input"
-    let entity = Arc::new(create_simple_closure_entity(type_name.clone()));
+    let entity = Factory::new(type_name);
 
     // Go into scope
     {
@@ -33,7 +34,7 @@ fn simple_closure_test () {
 
         // Now create the "SimpleClosure" behaviour on top of the entity instance
         // Pass the closure to the behaviour
-        let simple_closure = SimpleClosure::new(entity.clone(), closure);
+        let simple_closure = SimpleClosure::new(entity.clone(), Box::new(closure));
 
         // Check that the type name is correct
         assert_eq!(type_name, simple_closure.type_name());
@@ -45,7 +46,7 @@ fn simple_closure_test () {
         assert_eq!(0, *value.read().unwrap().deref());
 
         // Set the entity instance value to another value
-        entity.set(PROPERTY_NAME_INPUT.to_string(), json!(10));
+        entity.set(SimpleClosureProperties::INPUT.to_string(), json!(10));
 
         // Check that the value has changed
         // That means that the closure has modified the value
@@ -53,7 +54,7 @@ fn simple_closure_test () {
     } // simple_closure goes out of scope!
 
     // Set the entity instance value to yet another value
-    entity.set(PROPERTY_NAME_INPUT.to_string(), json!(20));
+    entity.set(SimpleClosureProperties::INPUT.to_string(), json!(20));
 
     // Check that the value is still the same
     // Because the simple_closure has gone out of scope

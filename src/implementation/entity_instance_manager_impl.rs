@@ -1,6 +1,6 @@
 use crate::api::{
     EntityInstanceCreationError, EntityInstanceImportError, EntityInstanceManager,
-    EntityInstanceVertexManager,
+    EntityVertexManager,
 };
 use crate::model::EntityInstance;
 use async_trait::async_trait;
@@ -15,20 +15,20 @@ use log::error;
 
 #[component]
 pub struct EntityInstanceManagerImpl {
-    entity_instance_vertex_manager: Wrc<dyn EntityInstanceVertexManager>,
+    entity_vertex_manager: Wrc<dyn EntityVertexManager>,
 }
 
 #[async_trait]
 #[provides]
 impl EntityInstanceManager for EntityInstanceManagerImpl {
     fn has(&self, id: Uuid) -> bool {
-        self.entity_instance_vertex_manager.has(id)
+        self.entity_vertex_manager.has(id)
     }
 
     fn get(&self, id: Uuid) -> Option<EntityInstance> {
-        let properties = self.entity_instance_vertex_manager.get_properties(id);
+        let properties = self.entity_vertex_manager.get_properties(id);
         if properties.is_some() {
-            return Some(EntityInstance::from_vertex_properties(properties.unwrap()));
+            return Some(EntityInstance::from(properties.unwrap()));
         }
         None
     }
@@ -38,9 +38,7 @@ impl EntityInstanceManager for EntityInstanceManagerImpl {
         type_name: String,
         properties: HashMap<String, Value, RandomState>,
     ) -> Result<Uuid, EntityInstanceCreationError> {
-        let result = self
-            .entity_instance_vertex_manager
-            .create(type_name, properties);
+        let result = self.entity_vertex_manager.create(type_name, properties);
         if result.is_ok() {
             return Ok(result.unwrap());
         }
@@ -53,17 +51,35 @@ impl EntityInstanceManager for EntityInstanceManagerImpl {
         id: Uuid,
         properties: HashMap<String, Value, RandomState>,
     ) -> Result<Uuid, EntityInstanceCreationError> {
-        let result = self
-            .entity_instance_vertex_manager
-            .create_with_id(type_name, id, properties);
+        let result = self.entity_vertex_manager.create_with_id(type_name, id, properties);
         if result.is_ok() {
             return Ok(result.unwrap());
         }
         Err(EntityInstanceCreationError.into())
     }
 
+    fn create_from_instance(
+        &self,
+        entity_instance: EntityInstance
+    ) -> Result<Uuid, EntityInstanceCreationError> {
+        let result = self.entity_vertex_manager.create_with_id(
+            entity_instance.type_name.clone(),
+            entity_instance.id,
+            entity_instance.properties.clone()
+        );
+        if result.is_ok() {
+            return Ok(result.unwrap());
+        }
+        Err(EntityInstanceCreationError.into())
+    }
+
+    // TODO: id is redundant!
+    fn commit(&self, entity_instance: EntityInstance) {
+        self.entity_vertex_manager.commit(entity_instance.id, entity_instance.properties.clone());
+    }
+
     fn delete(&self, id: Uuid) {
-        self.entity_instance_vertex_manager.delete(id);
+        self.entity_vertex_manager.delete(id);
     }
 
     fn import(&self, path: String) -> Result<Uuid, EntityInstanceImportError> {
@@ -75,7 +91,7 @@ impl EntityInstanceManager for EntityInstanceManagerImpl {
             if entity_instance.is_ok() {
                 let entity_instance: EntityInstance = entity_instance.unwrap();
                 if !self.has(entity_instance.id) {
-                    let result = self.entity_instance_vertex_manager.create_with_id(
+                    let result = self.entity_vertex_manager.create_with_id(
                         entity_instance.type_name,
                         entity_instance.id,
                         entity_instance.properties,
@@ -99,21 +115,13 @@ impl EntityInstanceManager for EntityInstanceManagerImpl {
                 Ok(file) => {
                     let result = serde_json::to_writer_pretty(&file, &o_entity_instance.unwrap());
                     if result.is_err() {
-                        error!(
-                            "Failed to export entity instance {} to {}: {}",
-                            id,
-                            path,
-                            result.err().unwrap()
-                        );
+                        error!("Failed to export entity instance {} to {}: {}",
+                               id, path, result.err().unwrap());
                     }
                 }
                 Err(error) => {
-                    error!(
-                        "Failed to export entity instance {} to {}: {}",
-                        id,
-                        path,
-                        error.to_string()
-                    );
+                    error!("Failed to export entity instance {} to {}: {}",
+                           id, path, error.to_string());
                 }
             }
         }

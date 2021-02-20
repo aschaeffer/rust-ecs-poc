@@ -3,15 +3,15 @@
   "properties": [
     {
       "name": "px",
-      "data_type": "f64"
+      "data_type": "number"
     },
     {
       "name": "py",
-      "data_type": "f64"
+      "data_type": "number"
     },
     {
       "name": "pz",
-      "data_type": "f64"
+      "data_type": "number"
     }
   ]
 }

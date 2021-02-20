@@ -5,14 +5,23 @@ use std::str::FromStr;
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct RelationType {
-    pub name: String,
+    pub outbound_type: String,
+
+    #[serde(alias = "name")]
+    pub type_name: String,
+
+    pub inbound_type: String,
 
     #[serde(default = "empty_string")]
     pub description: String,
 
-    pub outbound_type: String,
-    pub inbound_type: String,
+    #[serde(default = "Vec::new")]
     pub components: Vec<String>,
+
+    #[serde(default = "Vec::new")]
+    pub behaviours: Vec<String>,
+
+    #[serde(default = "Vec::new")]
     pub properties: Vec<PropertyType>,
 
     #[serde(skip)]
@@ -21,19 +30,21 @@ pub struct RelationType {
 
 impl RelationType {
     pub fn new(
-        name: String,
         outbound_type: String,
+        type_name: String,
         inbound_type: String,
         components: Vec<String>,
+        behaviours: Vec<String>,
         properties: Vec<PropertyType>,
     ) -> RelationType {
-        let t = Type::from_str(name.clone().as_str()).unwrap();
+        let t = Type::from_str(type_name.clone().as_str()).unwrap();
         RelationType {
-            name,
-            description: empty_string(),
             outbound_type,
+            type_name,
             inbound_type,
+            description: empty_string(),
             components,
+            behaviours,
             properties,
             t,
         }
@@ -42,6 +53,11 @@ impl RelationType {
     /// Returns true, if the relation type is a.
     pub fn is_a(&self, component_name: String) -> bool {
         self.components.contains(&component_name)
+    }
+
+    /// Returns true, if the relation type behaves as.
+    pub fn behaves_as(&self, behaviour_name: String) -> bool {
+        self.behaviours.contains(&behaviour_name)
     }
 
     /// Returns true, if the relation type contains an own property with the given name.
@@ -56,3 +72,8 @@ impl RelationType {
 fn empty_string() -> String {
     "".to_string()
 }
+
+// #[cfg_attr(tarpaulin, ignore)]
+// fn empty_vec() -> Vec<String> {
+//     Vec::new()
+// }

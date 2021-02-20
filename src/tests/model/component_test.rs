@@ -1,4 +1,4 @@
-use crate::model::{Component, PropertyType};
+use crate::model::{Component, PropertyType, DataType};
 use crate::tests::utils::r_string;
 
 #[test]
@@ -6,7 +6,7 @@ fn component_test() {
     let component_name = r_string();
     let property_name = r_string();
     let mut property_types = Vec::new();
-    let property_type = PropertyType::new(property_name.clone(), String::from("string"));
+    let property_type = PropertyType::new(property_name.clone(), DataType::String);
     property_types.push(property_type.clone());
     let mut component = Component {
         name: component_name.clone(),
@@ -28,7 +28,7 @@ fn create_component_test() {
     let component_name =  r_string();
     let mut property_types = Vec::new();
     let property_name =  r_string();
-    let property_type = PropertyType::new(property_name.clone(), String::from("string"));
+    let property_type = PropertyType::new(property_name.clone(), DataType::String);
     property_types.push(property_type.clone());
     let component = Component::new(component_name.clone(), property_types.clone());
     assert_eq!(component_name, component.name);

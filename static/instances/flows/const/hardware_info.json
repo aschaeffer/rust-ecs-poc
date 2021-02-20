@@ -2,11 +2,66 @@
   "id": "4faf3dad-3be5-45c7-b73e-96e5855b4c7d",
   "description": "Threads per CPU Core",
   "entities": [
-    "d5f6e205-ccc6-4b63-9675-014831ecbf3f",
-    "ddde5b62-e85a-4b26-bfbd-70e51c2be815",
-    "3cb4254a-0a99-41b8-b6f4-b5dc6e13f7ff",
-    "60f08554-1258-4347-93d2-b05c7f9b51d7"
+    {
+      "type": "value",
+      "id": "ddde5b62-e85a-4b26-bfbd-70e51c2be815",
+      "description": "Number of CPUs",
+      "properties": {
+        "value": "1"
+      }
+    },
+    {
+      "type": "value",
+      "id": "3cb4254a-0a99-41b8-b6f4-b5dc6e13f7ff",
+      "description": "Number of Physical CPUs",
+      "properties": {
+        "value": "1"
+      }
+    },
+    {
+      "type": "divide",
+      "id": "d5f6e205-ccc6-4b63-9675-014831ecbf3f",
+      "description": "Divide total number of CPUs by physical number of CPUs",
+      "properties": {
+        "value": "1"
+      }
+    },
+    {
+      "type": "value",
+      "id": "60f08554-1258-4347-93d2-b05c7f9b51d7",
+      "description": "Ratio: Num CPUs / Num Physical CPUs",
+      "properties": {
+        "value": "1"
+      }
+    }
   ],
   "relations": [
+    {
+      "outbound_id": "ddde5b62-e85a-4b26-bfbd-70e51c2be815",
+      "type": "default_connector--value--number_1",
+      "inbound_id": "d5f6e205-ccc6-4b63-9675-014831ecbf3f",
+      "properties": {
+        "outbound_property_name": "value",
+        "inbound_property_name": "number_1"
+      }
+    },
+    {
+      "outbound_id": "3cb4254a-0a99-41b8-b6f4-b5dc6e13f7ff",
+      "type": "default_connector--value--number_2",
+      "inbound_id": "d5f6e205-ccc6-4b63-9675-014831ecbf3f",
+      "properties": {
+        "outbound_property_name": "value",
+        "inbound_property_name": "number_2"
+      }
+    },
+    {
+      "outbound_id": "d5f6e205-ccc6-4b63-9675-014831ecbf3f",
+      "type": "default_connector--result_1--value",
+      "inbound_id": "60f08554-1258-4347-93d2-b05c7f9b51d7",
+      "properties": {
+        "outbound_property_name": "result_1",
+        "inbound_property_name": "value"
+      }
+    }
   ]
 }

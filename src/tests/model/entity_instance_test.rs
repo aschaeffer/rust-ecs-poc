@@ -59,7 +59,7 @@ fn create_entity_instance_from_vertex_properties() {
         vertex: Vertex { id: uuid, t: t.clone() },
         props: properties.clone()
     };
-    let entity_instance = EntityInstance::from_vertex_properties(vertex_properties);
+    let entity_instance = EntityInstance::from(vertex_properties);
     assert_eq!(type_name.clone(), entity_instance.type_name.clone());
     assert_eq!(uuid.clone(), entity_instance.id.clone());
     assert_eq!(property_value.as_str(), entity_instance.properties.get(property_name.as_str()).unwrap().as_str().unwrap());

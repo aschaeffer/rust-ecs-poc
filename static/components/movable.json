@@ -3,15 +3,15 @@
   "properties": [
     {
       "name": "vx",
-      "data_type": "f64"
+      "data_type": "number"
     },
     {
       "name": "vy",
-      "data_type": "f64"
+      "data_type": "number"
     },
     {
       "name": "vz",
-      "data_type": "f64"
+      "data_type": "number"
     }
   ]
 }

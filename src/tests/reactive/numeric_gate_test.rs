@@ -1,13 +1,14 @@
 use crate::api::{PropertyInstanceGetter, PropertyInstanceSetter};
 use crate::behaviour::{AddGate};
-use crate::reactive::{Connector};
+use crate::reactive::{Connector, create_numeric_gate_entity};
 use crate::tests::create_relation_instance_with_properties;
 use serde_json::json;
 use std::sync::Arc;
 use crate::reactive::numeric_gate::{create_trigonometric_gate_entity, TrigonometricGate, PROPERTY_NAME_NUMBER_1, PROPERTY_NAME_NUMBER_2, PROPERTY_NAME_RESULT_1};
 
 #[test]
-fn and_gate_type_test () {
+fn numeric_gate_type_test () {
+    // create_numeric_gate_entity(Sin)
     let and = Arc::new(create_trigonometric_gate_entity(AddGate::TYPE_NAME.to_string()));
     let and_gate = TrigonometricGate::new(and.clone(), AddGate::OPERATION);
     assert_eq!(AddGate::TYPE_NAME.to_string(), and_gate.type_name());

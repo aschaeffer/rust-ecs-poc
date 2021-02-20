@@ -1,11 +1,11 @@
 use crate::bidule::Stream;
 use serde_json::Value;
 use std::ops::{Deref, DerefMut};
-use std::sync::RwLock;
+use std::sync::{RwLock, Arc};
 use uuid::Uuid;
 
 // This is not automatically persisted to graph database (yet)!
-pub struct ReactivePropertyInstance<'a> {
+pub struct ReactivePropertyInstance {
     /// Vertex uuid
     pub id: Uuid,
 
@@ -13,18 +13,18 @@ pub struct ReactivePropertyInstance<'a> {
     pub name: String,
 
     /// The reactive stream
-    pub stream: RwLock<Stream<'a, Value>>,
+    pub stream: Arc<RwLock<Stream<'static, Value>>>,
 
     /// Store the current value
     pub value: RwLock<Value>,
 }
 
-impl ReactivePropertyInstance<'_> {
-    pub fn new(id: Uuid, name: String, value: Value) -> ReactivePropertyInstance<'static> {
+impl ReactivePropertyInstance {
+    pub fn new(id: Uuid, name: String, value: Value) -> ReactivePropertyInstance {
         ReactivePropertyInstance {
             id,
             name,
-            stream: RwLock::new(Stream::new()),
+            stream: Arc::new(RwLock::new(Stream::new())),
             value: RwLock::new(value),
         }
     }
@@ -46,6 +46,7 @@ impl ReactivePropertyInstance<'_> {
 
     /// Resend the current value manually
     pub fn tick(&self) {
+        // println!("tick {}::{}", self.id, self.name);
         let value = self.value.read().unwrap().deref().clone();
         self.stream.read().unwrap().send(&value);
     }
@@ -80,3 +81,39 @@ impl ReactivePropertyInstance<'_> {
     //     self.get().as_object()
     // }
 }
+
+impl PartialEq for ReactivePropertyInstance {
+    fn eq(&self, other: &Self) -> bool {
+        self.value.read().unwrap().deref() == other.value.read().unwrap().deref()
+    }
+}
+
+// impl Add for ReactivePropertyInstance {
+//     type Output = Self;
+//
+//     fn add(self, rhs: Self) -> Self::Output {
+//         self.value.read().unwrap().deref() + rhs.value.read().unwrap().deref()
+//     }
+// }
+
+// impl AddAssign for ReactivePropertyInstance {
+//     fn add_assign(&mut self, rhs: Self) {
+//         let v = *self.value.read().unwrap().deref() + *rhs.value.read().unwrap().deref();
+//     }
+// }
+
+// TODO: implement PartialEq traits for bool, u64, i64, f64, string, &str
+// This makes it possible to simplify comparison:
+// if entity.get(name) == 32_i64 () { /* ...*/ }
+// 1. as_i64() -> Option
+// 2. if None -> false
+// 3. if Some -> Compare -> true or false
+
+// TODO: Implement operators
+// https://doc.rust-lang.org/std/ops/index.html
+// Add, A
+// Sub
+
+// TODO: Implement is_
+// self.value.read().unwrap().is_boolean()
+// is_64 is_array is_boolean is_i64 is_null is_number is_object is_string is_u64

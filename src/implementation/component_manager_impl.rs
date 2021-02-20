@@ -1,4 +1,4 @@
-use crate::api::ComponentManager;
+use crate::api::{ComponentManager, Lifecycle};
 use crate::model::PropertyType;
 use async_trait::async_trait;
 use rust_embed::RustEmbed;
@@ -117,5 +117,16 @@ impl ComponentManager for ComponentManagerImpl {
                 }
             }
         }
+    }
+}
+
+impl Lifecycle for ComponentManagerImpl {
+    fn init(&self) {
+        self.load_static_components();
+    }
+
+    fn shutdown(&self) {
+        // TODO: cleanup
+        // self.clear_components();
     }
 }

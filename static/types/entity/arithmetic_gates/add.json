@@ -1,7 +1,11 @@
 {
   "name": "add",
+  "description": "Performs an addition on two integer numbers",
   "components": [
     "arithmetic_gate"
+  ],
+  "behaviours": [
+    "AddGate"
   ],
   "properties": [
   ]

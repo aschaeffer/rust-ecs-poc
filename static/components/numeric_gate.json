@@ -2,11 +2,11 @@
   "name": "numeric_gate",
   "properties": [
     {
-      "name": "number_1",
+      "name": "lhs",
       "data_type": "number"
     },
     {
-      "name": "number_2",
+      "name": "rhs",
       "data_type": "number"
     },
     {

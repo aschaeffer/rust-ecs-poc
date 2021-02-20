@@ -1,4 +1,4 @@
-use crate::api::{GraphDatabase, RelationTypeImportError};
+use crate::api::{RelationTypeImportError, EntityTypeManager, Lifecycle};
 use crate::api::{ComponentManager, RelationTypeManager};
 use crate::model::{RelationType, PropertyType};
 use async_trait::async_trait;
@@ -24,9 +24,9 @@ fn create_external_type_dependency() -> RelationTypes {
 
 #[component]
 pub struct RelationTypeManagerImpl {
-    graph_database: Wrc<dyn GraphDatabase>,
-
     component_manager: Wrc<dyn ComponentManager>,
+
+    entity_type_manager: Wrc<dyn EntityTypeManager>,
 
     relation_types: RelationTypes,
 }
@@ -35,26 +35,31 @@ pub struct RelationTypeManagerImpl {
 #[provides]
 impl RelationTypeManager for RelationTypeManagerImpl {
     fn register(&self, mut relation_type: crate::model::RelationType) {
-        debug!("Registered relation type {}", relation_type.name);
+        debug!("Registered relation type {}", relation_type.type_name.clone());
         // Construct the type
-        relation_type.t = Type::new(relation_type.name.clone()).unwrap();
+        relation_type.t = Type::new(relation_type.type_name.clone()).unwrap();
+        if relation_type.outbound_type != "*" &&!self.entity_type_manager.has(relation_type.outbound_type.clone()) {
+            warn!("Relation type {} not initialized: Outbound entity type does not exist {}", relation_type.type_name.clone(), relation_type.outbound_type.clone());
+            // TODO: Result
+            return
+        }
+        if relation_type.inbound_type != "*" &&!self.entity_type_manager.has(relation_type.inbound_type.clone()) {
+            warn!("Relation type {} not initialized: Inbound entity type does not exist {}", relation_type.type_name.clone(), relation_type.inbound_type.clone());
+            // TODO: Result
+            return
+        }
         for component_name in relation_type.components.to_vec() {
             let component = self.component_manager.get(component_name.clone());
             if component.is_some() {
-                relation_type
-                    .properties
+                relation_type.properties
                     .append(&mut component.unwrap().properties);
             } else {
-                warn!("Relation type {} not fully initialized: No component named {}", relation_type.name.clone(), component_name);
+                warn!("Relation type {} not fully initialized: No component named {}", relation_type.type_name.clone(), component_name);
             }
         }
+
         self.relation_types.0.write().unwrap().push(relation_type);
-        // let result = self.graph_database.get_transaction();
-        // if result.is_ok() {
-        //     let transaction = result.unwrap();
-        //     let type_camera = Type::new("camera").unwrap();
-        //     // transaction.c
-        // }
+        // TODO: Result
     }
 
     fn load_static_relation_types(&self) {
@@ -77,36 +82,36 @@ impl RelationTypeManager for RelationTypeManagerImpl {
         self.relation_types.0.read().unwrap().to_vec()
     }
 
-    fn has(&self, name: String) -> bool {
-        self.get(name).is_some()
+    fn has(&self, type_name: String) -> bool {
+        self.get(type_name).is_some()
     }
 
-    fn get(&self, name: String) -> Option<RelationType> {
-        self.relation_types
-            .0
-            .read()
-            .unwrap()
-            .to_vec()
-            .into_iter()
-            .find(|relation_type| relation_type.name == name)
+    fn get(&self, type_name: String) -> Option<RelationType> {
+        self.relation_types.0.read().unwrap()
+            .to_vec().into_iter()
+            .find(|relation_type| relation_type.type_name == type_name)
     }
 
-    fn create(&self, name: String, outbound_type: String, inbound_type: String, components: Vec<String>, properties: Vec<PropertyType>) {
+    fn get_starts_with(&self, type_name_starts_with: String) -> Option<RelationType> {
+        self.relation_types.0.read().unwrap()
+            .to_vec().into_iter()
+            .find(|relation_type| type_name_starts_with.starts_with(relation_type.type_name.as_str()))
+    }
+
+    fn create(&self, outbound_type: String, type_name: String, inbound_type: String, components: Vec<String>, behaviours: Vec<String>, properties: Vec<PropertyType>) {
         self.register(RelationType::new(
-            name.clone(),
-            outbound_type,
-            inbound_type,
+            outbound_type.clone(),
+            type_name.clone(),
+            inbound_type.clone(),
             components.to_vec(),
+            behaviours.to_vec(),
             properties.to_vec(),
         ));
     }
 
-    fn delete(&self, name: String) {
-        self.relation_types
-            .0
-            .write()
-            .unwrap()
-            .retain(|relation_type| relation_type.name != name);
+    fn delete(&self, type_name: String) {
+        self.relation_types.0.write().unwrap()
+            .retain(|relation_type| relation_type.type_name != type_name);
     }
 
     fn import(&self, path: String) -> Result<RelationType, RelationTypeImportError> {
@@ -124,31 +129,34 @@ impl RelationTypeManager for RelationTypeManagerImpl {
         Err(RelationTypeImportError.into())
     }
 
-    fn export(&self, name: String, path: String) {
-        let o_relation_type = self.get(name.clone());
+    fn export(&self, type_name: String, path: String) {
+        let o_relation_type = self.get(type_name.clone());
         if o_relation_type.is_some() {
             let r_file = File::create(path.clone());
             match r_file {
                 Ok(file) => {
                     let result = serde_json::to_writer_pretty(&file, &o_relation_type.unwrap());
                     if result.is_err() {
-                        error!(
-                            "Failed to export relation type {} to {}: {}",
-                            name,
-                            path,
-                            result.err().unwrap()
+                        error!("Failed to export relation type {} to {}: {}",
+                               type_name, path, result.err().unwrap()
                         );
                     }
                 }
                 Err(error) => {
-                    error!(
-                        "Failed to export relation type {} to {}: {}",
-                        name,
-                        path,
-                        error.to_string()
-                    );
+                    error!("Failed to export relation type {} to {}: {}",
+                           type_name, path, error.to_string());
                 }
             }
         }
+    }
+}
+
+impl Lifecycle for RelationTypeManagerImpl {
+    fn init(&self) {
+        self.load_static_relation_types();
+    }
+
+    fn shutdown(&self) {
+        // TODO: self.clear_relation_types();
     }
 }

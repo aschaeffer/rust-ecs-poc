@@ -67,7 +67,7 @@ fn create_relation_instance_from_edge_properties() {
         Edge::new_with_current_datetime(edge_key),
         properties.clone()
     );
-    let relation_instance = RelationInstance::from_edge_properties(edge_properties);
+    let relation_instance = RelationInstance::from(edge_properties);
     assert_eq!(outbound_id.clone(), relation_instance.outbound_id.clone());
     assert_eq!(type_name.clone(), relation_instance.type_name.clone());
     assert_eq!(inbound_id.clone(), relation_instance.inbound_id.clone());
@@ -101,4 +101,23 @@ fn relation_instance_typed_getter_test() {
     let s = r_string();
     i.set(property_name.clone(), json!(s.clone()));
     assert_eq!(s, i.as_string(property_name.clone()).unwrap());
+}
+
+#[test]
+fn relation_instance_get_key_test() {
+    let outbound_id = Uuid::new_v4();
+    let inbound_id = Uuid::new_v4();
+    let type_name = r_string();
+    let description = r_string();
+    let properties = HashMap::new();
+    let relation_instance = RelationInstance {
+        outbound_id,
+        type_name: type_name.clone(),
+        inbound_id,
+        description: description.to_string(),
+        properties: properties.clone(),
+    };
+    let edge_key = relation_instance.get_key();
+    assert!(edge_key.is_some());
+    assert_eq!(EdgeKey::new(outbound_id, Type::new(type_name.clone()).unwrap(), inbound_id), edge_key.unwrap());
 }

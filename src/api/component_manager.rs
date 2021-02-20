@@ -1,8 +1,9 @@
 use crate::model::PropertyType;
 use async_trait::async_trait;
+use crate::api::Lifecycle;
 
 #[async_trait]
-pub trait ComponentManager: Send + Sync {
+pub trait ComponentManager: Send + Sync + Lifecycle {
     fn register(&self, component: crate::model::Component);
     fn load_static_components(&self);
     fn get_components(&self) -> Vec<crate::model::Component>;

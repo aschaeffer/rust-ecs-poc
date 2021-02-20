@@ -1,5 +1,5 @@
 use crate::api::{PropertyInstanceGetter, PropertyInstanceSetter};
-use crate::reactive::ConstValue;
+use crate::reactive::{ConstValue, ConstValueProperties};
 use crate::model::ReactiveEntityInstance;
 use crate::tests::utils::r_string;
 use indradb::{VertexProperties, Type, NamedProperty, Vertex};
@@ -7,6 +7,7 @@ use uuid::Uuid;
 use serde_json::json;
 use std::str::FromStr;
 use std::sync::Arc;
+use crate::reactive::entity::const_value::ConstValueReactiveEntityInstanceFactory as Factory;
 
 #[test]
 fn const_value_test () {
@@ -16,7 +17,7 @@ fn const_value_test () {
     let initial_property_value = 0;
     let property_value_json = json!(initial_property_value);
     let property = NamedProperty {
-        name: ConstValue::PROPERTY_NAME_VALUE.to_string(),
+        name: ConstValueProperties::VALUE.to_string(),
         value: property_value_json
     };
     let properties = vec![
@@ -36,7 +37,7 @@ fn const_value_test () {
     const_value.set(&json!(cpus));
     // Read value from entity instance property
     // let value = entity_instance.properties.get("value").unwrap().get().as_u64().unwrap() as usize;
-    let value = entity_instance.as_u64(ConstValue::PROPERTY_NAME_VALUE.to_string()).unwrap() as usize;
+    let value = entity_instance.as_u64(ConstValueProperties::VALUE.to_string()).unwrap() as usize;
     // Check if entity instance properties has been set correctly
     assert_eq!(cpus, value);
     assert_ne!(initial_property_value, value);
@@ -58,7 +59,7 @@ fn create_const_value_test () {
     let property_value_json = json!(initial_property_value);
 
     let property = NamedProperty {
-        name: ConstValue::PROPERTY_NAME_VALUE.to_string(),
+        name: ConstValueProperties::VALUE.to_string(),
         value: property_value_json
     };
 
@@ -75,7 +76,7 @@ fn create_const_value_test () {
     // Create const value
     let entity_instance = Arc::new(ReactiveEntityInstance::from(vertex_properties));
 
-    let const_value = ConstValue::new(Arc::clone(&entity_instance));
+    let const_value = ConstValue::from(Arc::clone(&entity_instance));
     // let const_value= ConstValue::from(vertex_properties);
     // let entity_instance = const_value.entity_instance.clone();
 
@@ -88,7 +89,7 @@ fn create_const_value_test () {
 
     // Read value from entity instance property
     // let value = entity_instance.properties.get("value").unwrap().get().as_u64().unwrap() as usize;
-    let value = entity_instance.as_u64(ConstValue::PROPERTY_NAME_VALUE.to_string()).unwrap() as usize;
+    let value = entity_instance.as_u64(ConstValueProperties::VALUE.to_string()).unwrap() as usize;
 
     // Check if entity instance properties has been set correctly
     assert_eq!(cpus, value);
@@ -107,7 +108,7 @@ fn const_value_connect_streams_test () {
     let initial_property_value = 0;
     let property_value_json = json!(initial_property_value);
     let property = NamedProperty {
-        name: ConstValue::PROPERTY_NAME_VALUE.to_string(),
+        name: ConstValueProperties::VALUE.to_string(),
         value: property_value_json
     };
     let properties = vec![
@@ -118,9 +119,9 @@ fn const_value_connect_streams_test () {
         props: properties.clone()
     };
     let entity_instance_1 = Arc::new(ReactiveEntityInstance::from(vertex_properties.clone()));
-    let const_value_1 = ConstValue::new(entity_instance_1.clone());
+    let const_value_1 = ConstValue::from(entity_instance_1.clone());
     let entity_instance_2 = Arc::new(ReactiveEntityInstance::from(vertex_properties.clone()));
-    let const_value_2 = ConstValue::new(entity_instance_2.clone());
+    let const_value_2 = ConstValue::from(entity_instance_2.clone());
     let cpus = num_cpus::get();
     // Not connected
     const_value_1.set(&json!(cpus));
@@ -134,11 +135,20 @@ fn const_value_connect_streams_test () {
         .read()
         .unwrap()
         .observe(move |v| {
-            e.set(ConstValue::PROPERTY_NAME_VALUE.to_string(), v.clone());
+            e.set(ConstValueProperties::VALUE.to_string(), v.clone());
         });
     // Connected, not it should propagate the changes from const_value_1 to const_value_2
     const_value_1.set(&json!(cpus));
     assert_eq!(cpus, const_value_1.get().unwrap());
     assert_eq!(cpus, const_value_2.get().unwrap());
     assert_eq!(const_value_1.get().unwrap(), const_value_2.get().unwrap());
+}
+
+#[test]
+fn const_value_factory_test () {
+    let entity_instance = Factory::new_default();
+    assert_eq!(ConstValue::DEFAULT_TYPE_NAME, entity_instance.type_name.clone().as_str());
+    let const_value = ConstValue::from(entity_instance.clone());
+    let cpus = num_cpus::get();
+    const_value.set(&json!(cpus))
 }

@@ -237,6 +237,10 @@ pub struct Stream<'a, Sig> {
   subscribers: DependentStreams<'a, Sig>
 }
 
+/// TODO: This solves many problems, but is it really OK?
+unsafe impl<Sig> Send for Stream<'_, Sig> {}
+unsafe impl<Sig> Sync for Stream<'_, Sig> {}
+
 impl<'a, Sig> Stream<'a, Sig>
 where
   Sig: 'a,

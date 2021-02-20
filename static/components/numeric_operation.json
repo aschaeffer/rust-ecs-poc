@@ -2,7 +2,7 @@
   "name": "numeric_operation",
   "properties": [
     {
-      "name": "number_1",
+      "name": "lhs",
       "data_type": "number"
     },
     {

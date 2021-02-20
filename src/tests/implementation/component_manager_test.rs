@@ -1,96 +1,70 @@
-use crate::application::Application;
-use crate::di::di_container;
-use crate::model::{Component, PropertyType};
-use random_string::{Charset, Charsets, RandomString};
 use std::env;
-use waiter_di::{profiles, Provider};
+
+use crate::model::{Component, PropertyType, DataType};
+use crate::tests::utils::{init_application, r_string};
 
 #[test]
 fn test_register_component() {
-    let mut container = di_container::get::<profiles::Default>();
-    let container = &mut container;
-    let application = Provider::<dyn Application>::create(container);
-
-    let component_name =
-        RandomString::generate(10, &Charset::from_charsets(Charsets::Letters)).to_string();
-
-    let property_name =
-        RandomString::generate(10, &Charset::from_charsets(Charsets::Letters)).to_string();
-
-    application.component_manager.register(Component::new(
+    let application = init_application();
+    let component_manager = application.get_component_manager();
+    let component_name = r_string();
+    let property_name = r_string();
+    component_manager.register(Component::new(
         component_name.clone(),
         vec![PropertyType::new(
             property_name.clone(),
-            String::from("string"),
+            DataType::String,
         )],
     ));
-    assert!(application.component_manager.has(component_name.clone()));
+    assert!(component_manager.has(component_name.clone()));
 
-    let component: Component = application
-        .component_manager
-        .get(component_name.clone())
-        .unwrap();
+    let component = component_manager.get(component_name.clone()).unwrap();
     assert_eq!(component_name, component.name);
     assert!(component.has_property(property_name.clone()));
-    assert!(!component.has_property(
-        RandomString::generate(10, &Charset::from_charsets(Charsets::Letters)).to_string()
-    ));
+    assert!(!component.has_property(r_string()));
 }
 
 #[test]
 fn test_load_static_components() {
-    let mut container = di_container::get::<profiles::Default>();
-    let container = &mut container;
-    let application = Provider::<dyn Application>::create(container);
-    application.component_manager.load_static_components();
-    assert!(application.component_manager.has(String::from("named")));
-    assert!(application
-        .component_manager
-        .has(String::from("positionable")));
-    assert!(application.component_manager.has(String::from("movable")));
-    assert!(!application
-        .component_manager
-        .has(RandomString::generate(10, &Charset::from_charsets(Charsets::Letters)).to_string()));
+    let application = init_application();
+    let component_manager = application.get_component_manager();
+    component_manager.load_static_components();
+    assert!(component_manager.has(String::from("named")));
+    assert!(component_manager.has(String::from("positionable")));
+    assert!(component_manager.has(String::from("movable")));
+    assert!(!component_manager.has(r_string()));
 }
 
 #[test]
 fn test_get_components() {
-    let mut container = di_container::get::<profiles::Default>();
-    let container = &mut container;
-    let application = Provider::<dyn Application>::create(container);
-    application.component_manager.load_static_components();
-    let components = application.component_manager.get_components();
+    let application = init_application();
+    let component_manager = application.get_component_manager();
+    component_manager.load_static_components();
+    let components = component_manager.get_components();
     for component in components {
-        assert!(application.component_manager.has(component.name));
+        assert!(component_manager.has(component.name));
     }
-    assert!(!application
-        .component_manager
-        .has(RandomString::generate(10, &Charset::from_charsets(Charsets::Letters)).to_string()));
+    assert!(!component_manager.has(r_string()));
 }
 
 #[test]
 fn test_export_import_component() {
-    let mut container = di_container::get::<profiles::Default>();
-    let container = &mut container;
-    let application = Provider::<dyn Application>::create(container);
-
-    let component_name =
-        RandomString::generate(10, &Charset::from_charsets(Charsets::Letters)).to_string();
+    let application = init_application();
+    let component_manager = application.get_component_manager();
+    let component_name = r_string();
 
     let mut path = env::temp_dir();
     path.push(format!("{}.json", component_name));
     let path = path.into_os_string().into_string().unwrap();
 
-    application.component_manager.create(
+    component_manager.create(
         component_name.clone(),
-        vec![PropertyType::new(String::from("x"), String::from("string"))],
+        vec![PropertyType::new(String::from("x"), DataType::String)],
     );
-    application
-        .component_manager
-        .export(component_name.clone(), path.clone());
-    assert!(application.component_manager.has(component_name.clone()));
-    application.component_manager.delete(component_name.clone());
-    assert!(!application.component_manager.has(component_name.clone()));
-    application.component_manager.import(path.clone());
-    assert!(application.component_manager.has(component_name.clone()));
+    component_manager.export(component_name.clone(), path.clone());
+    assert!(component_manager.has(component_name.clone()));
+    component_manager.delete(component_name.clone());
+    assert!(!component_manager.has(component_name.clone()));
+    component_manager.import(path.clone());
+    assert!(component_manager.has(component_name.clone()));
 }

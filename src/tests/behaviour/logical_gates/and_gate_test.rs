@@ -1,8 +1,7 @@
 use crate::api::{PropertyInstanceGetter, PropertyInstanceSetter};
-use crate::behaviour::{AndGate, ReactiveEntityInstanceBehaviour};
-use crate::reactive::Connector;
-use crate::reactive::logical_gate::{PROPERTY_NAME_BIT_1,PROPERTY_NAME_BIT_2,PROPERTY_NAME_RESULT_1};
-use crate::tests::create_relation_instance_with_properties;
+use crate::behaviour::{AndGate, EntityBehaviour, DefaultConnector, ConnectorBehaviour};
+use crate::reactive::{Connector, LogicalGateProperties};
+use crate::tests::create_default_connector;
 use std::sync::Arc;
 use serde_json::json;
 
@@ -20,36 +19,36 @@ fn and_gates_test () {
     // In real world, the and gate have to be registered in the registry (!)
 
     // Connect the results of the first two AND-Gates with the inputs of the third AND-Gate
-    let r_and_1_and_3 = Arc::new(create_relation_instance_with_properties(
+    let r_and_1_and_3 = Arc::new(create_default_connector(
         and_1.clone(),
         and_3.clone(),
-        PROPERTY_NAME_RESULT_1.to_string(),
-        PROPERTY_NAME_BIT_1.to_string()
+        LogicalGateProperties::RESULT.to_string(),
+        LogicalGateProperties::LHS.to_string()
     ));
-    let c_and_1_and_3 = Connector::from_relation(r_and_1_and_3.clone());
+    let c_and_1_and_3 = Connector::from_relation(r_and_1_and_3.clone(), DefaultConnector::OPERATION);
     assert_ne!(0, c_and_1_and_3.handle_id);
 
-    let r_and_2_and_3 = Arc::new(create_relation_instance_with_properties(
+    let r_and_2_and_3 = Arc::new(create_default_connector(
         and_2.clone(),
         and_3.clone(),
-        PROPERTY_NAME_RESULT_1.to_string(),
-        PROPERTY_NAME_BIT_2.to_string()
+        LogicalGateProperties::RESULT.to_string(),
+        LogicalGateProperties::RHS.to_string()
     ));
-    let c_and_2_and_3 = Connector::from_relation(r_and_2_and_3.clone());
+    let c_and_2_and_3 = Connector::from_relation(r_and_2_and_3.clone(), DefaultConnector::OPERATION);
     assert_ne!(0, c_and_2_and_3.handle_id);
 
-    and_1.set(PROPERTY_NAME_BIT_1.to_string(), json!(true));
-    assert_eq!(false, and_1.as_bool(PROPERTY_NAME_RESULT_1.to_string()).unwrap());
-    assert_eq!(false, and_3.as_bool(PROPERTY_NAME_RESULT_1.to_string()).unwrap());
-    and_1.set(PROPERTY_NAME_BIT_2.to_string(), json!(true));
-    assert_eq!(true, and_1.as_bool(PROPERTY_NAME_RESULT_1.to_string()).unwrap());
-    assert_eq!(false, and_3.as_bool(PROPERTY_NAME_RESULT_1.to_string()).unwrap());
+    and_1.set(LogicalGateProperties::LHS.to_string(), json!(true));
+    assert_eq!(false, and_1.as_bool(LogicalGateProperties::RESULT.to_string()).unwrap());
+    assert_eq!(false, and_3.as_bool(LogicalGateProperties::RESULT.to_string()).unwrap());
+    and_1.set(LogicalGateProperties::RHS.to_string(), json!(true));
+    assert_eq!(true, and_1.as_bool(LogicalGateProperties::RESULT.to_string()).unwrap());
+    assert_eq!(false, and_3.as_bool(LogicalGateProperties::RESULT.to_string()).unwrap());
 
-    and_2.set(PROPERTY_NAME_BIT_1.to_string(), json!(true));
-    assert_eq!(false, and_2.as_bool(PROPERTY_NAME_RESULT_1.to_string()).unwrap());
-    assert_eq!(false, and_3.as_bool(PROPERTY_NAME_RESULT_1.to_string()).unwrap());
-    and_2.set(PROPERTY_NAME_BIT_2.to_string(), json!(true));
-    assert_eq!(true, and_2.as_bool(PROPERTY_NAME_RESULT_1.to_string()).unwrap());
-    assert_eq!(true, and_3.as_bool(PROPERTY_NAME_RESULT_1.to_string()).unwrap());
+    and_2.set(LogicalGateProperties::LHS.to_string(), json!(true));
+    assert_eq!(false, and_2.as_bool(LogicalGateProperties::RESULT.to_string()).unwrap());
+    assert_eq!(false, and_3.as_bool(LogicalGateProperties::RESULT.to_string()).unwrap());
+    and_2.set(LogicalGateProperties::RHS.to_string(), json!(true));
+    assert_eq!(true, and_2.as_bool(LogicalGateProperties::RESULT.to_string()).unwrap());
+    assert_eq!(true, and_3.as_bool(LogicalGateProperties::RESULT.to_string()).unwrap());
 
 }

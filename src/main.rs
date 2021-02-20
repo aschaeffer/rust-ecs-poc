@@ -1,5 +1,8 @@
 #![feature(unsized_tuple_coercion)]
-#![feature(associated_consts)]
+#![feature(in_band_lifetimes)]
+#![feature(concat_idents)]
+
+// #![feature(associated_consts)]
 
 use waiter_di::*;
 
@@ -8,12 +11,13 @@ use crate::di::*;
 
 mod api;
 mod application;
+mod builder;
 mod di;
 mod implementation;
 mod model;
 mod reactive;
 pub mod bidule;
-mod behaviour;
+pub mod behaviour;
 
 #[cfg(test)]
 #[cfg_attr(tarpaulin, ignore)]
@@ -35,4 +39,5 @@ async fn main() {
 
     application.init();
     application.run().await;
+    application.shutdown();
 }

@@ -5,7 +5,7 @@
   "properties": [
     {
       "name": "value",
-      "data_type": "*"
+      "data_type": "any"
     }
   ]
 }

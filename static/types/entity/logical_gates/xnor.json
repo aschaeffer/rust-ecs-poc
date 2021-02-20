@@ -1,0 +1,8 @@
+{
+  "name": "xnor",
+  "components": [
+    "logical_gate"
+  ],
+  "properties": [
+  ]
+}

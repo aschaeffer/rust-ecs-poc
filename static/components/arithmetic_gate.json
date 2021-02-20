@@ -2,16 +2,19 @@
   "name": "arithmetic_gate",
   "properties": [
     {
-      "name": "number_1",
-      "data_type": "number"
+      "name": "lhs",
+      "data_type": "number",
+      "socket_type": "input"
     },
     {
-      "name": "number_2",
-      "data_type": "number"
+      "name": "rhs",
+      "data_type": "number",
+      "socket_type": "input"
     },
     {
       "name": "result",
-      "data_type": "number"
+      "data_type": "number",
+      "socket_type": "output"
     }
   ]
 }

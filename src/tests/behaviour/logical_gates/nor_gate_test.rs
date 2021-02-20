@@ -1,6 +1,6 @@
 use crate::api::{PropertyInstanceGetter, PropertyInstanceSetter};
-use crate::behaviour::{ReactiveEntityInstanceBehaviour, NorGate};
-use crate::reactive::logical_gate::{PROPERTY_NAME_BIT_1,PROPERTY_NAME_BIT_2,PROPERTY_NAME_RESULT_1};
+use crate::behaviour::{EntityBehaviour, NorGate};
+use crate::reactive::LogicalGateProperties;
 use serde_json::json;
 
 #[test]
@@ -12,18 +12,18 @@ fn nor_gates_test () {
     let nor = nor_gate.entity.clone();
 
     // Reset all inputs
-    nor.set(PROPERTY_NAME_BIT_1.to_string(), json!(false));
-    nor.set(PROPERTY_NAME_BIT_2.to_string(), json!(false));
+    nor.set(LogicalGateProperties::LHS.to_string(), json!(false));
+    nor.set(LogicalGateProperties::RHS.to_string(), json!(false));
 
     // Initial
-    assert_eq!(true, nor.as_bool(PROPERTY_NAME_RESULT_1.to_string()).unwrap());
+    assert_eq!(true, nor.as_bool(LogicalGateProperties::RESULT.to_string()).unwrap());
 
-    nor.set(PROPERTY_NAME_BIT_1.to_string(), json!(true));
-    assert_eq!(false, nor.as_bool(PROPERTY_NAME_RESULT_1.to_string()).unwrap());
+    nor.set(LogicalGateProperties::LHS.to_string(), json!(true));
+    assert_eq!(false, nor.as_bool(LogicalGateProperties::RESULT.to_string()).unwrap());
 
-    nor.set(PROPERTY_NAME_BIT_2.to_string(), json!(true));
-    assert_eq!(false, nor.as_bool(PROPERTY_NAME_RESULT_1.to_string()).unwrap());
+    nor.set(LogicalGateProperties::RHS.to_string(), json!(true));
+    assert_eq!(false, nor.as_bool(LogicalGateProperties::RESULT.to_string()).unwrap());
 
-    nor.set(PROPERTY_NAME_BIT_1.to_string(), json!(false));
-    assert_eq!(false, nor.as_bool(PROPERTY_NAME_RESULT_1.to_string()).unwrap());
+    nor.set(LogicalGateProperties::LHS.to_string(), json!(false));
+    assert_eq!(false, nor.as_bool(LogicalGateProperties::RESULT.to_string()).unwrap());
 }

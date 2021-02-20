@@ -1,6 +1,6 @@
 use crate::api::{PropertyInstanceGetter, PropertyInstanceSetter};
-use crate::behaviour::{NandGate, ReactiveEntityInstanceBehaviour};
-use crate::reactive::logical_gate::{PROPERTY_NAME_BIT_1,PROPERTY_NAME_BIT_2,PROPERTY_NAME_RESULT_1};
+use crate::behaviour::{NandGate, EntityBehaviour};
+use crate::reactive::LogicalGateProperties;
 use serde_json::json;
 
 #[test]
@@ -13,17 +13,17 @@ fn nand_gates_test () {
     // In real world, the nand gate have to be registered in the registry (!)
 
     // Reset state
-    nand.set(PROPERTY_NAME_BIT_1.to_string(), json!(false));
-    nand.set(PROPERTY_NAME_BIT_1.to_string(), json!(false));
+    nand.set(LogicalGateProperties::LHS.to_string(), json!(false));
+    nand.set(LogicalGateProperties::LHS.to_string(), json!(false));
 
-    assert_eq!(true, nand.as_bool(PROPERTY_NAME_RESULT_1.to_string()).unwrap());
+    assert_eq!(true, nand.as_bool(LogicalGateProperties::RESULT.to_string()).unwrap());
 
-    nand.set(PROPERTY_NAME_BIT_1.to_string(), json!(true));
-    assert_eq!(true, nand.as_bool(PROPERTY_NAME_RESULT_1.to_string()).unwrap());
+    nand.set(LogicalGateProperties::LHS.to_string(), json!(true));
+    assert_eq!(true, nand.as_bool(LogicalGateProperties::RESULT.to_string()).unwrap());
 
-    nand.set(PROPERTY_NAME_BIT_2.to_string(), json!(true));
-    assert_eq!(false, nand.as_bool(PROPERTY_NAME_RESULT_1.to_string()).unwrap());
+    nand.set(LogicalGateProperties::RHS.to_string(), json!(true));
+    assert_eq!(false, nand.as_bool(LogicalGateProperties::RESULT.to_string()).unwrap());
 
-    nand.set(PROPERTY_NAME_BIT_1.to_string(), json!(false));
-    assert_eq!(true, nand.as_bool(PROPERTY_NAME_RESULT_1.to_string()).unwrap());
+    nand.set(LogicalGateProperties::LHS.to_string(), json!(false));
+    assert_eq!(true, nand.as_bool(LogicalGateProperties::RESULT.to_string()).unwrap());
 }

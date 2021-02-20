@@ -2,15 +2,15 @@
   "name": "logical_gate",
   "properties": [
     {
-      "name": "bit_1",
+      "name": "lhs",
       "data_type": "bool"
     },
     {
-      "name": "bit_2",
+      "name": "rhs",
       "data_type": "bool"
     },
     {
-      "name": "result_1",
+      "name": "result",
       "data_type": "bool"
     }
   ]

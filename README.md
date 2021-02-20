@@ -30,13 +30,14 @@ the `game logic` using `reactive technologies`.
 
 The minimal valuable product (MVP) contains the following goals:
 
-- [ ] The entity system is a network of entities which are connected with semantic and directional relations in a graph
-- [ ] The entity system is a network of properties which are connected with connectors in order to control the data flow
-  from one entity to another
-- [ ] The underlying data store technology is a graph database which is embedded in the application
-- [ ] The entities/relations are reactive. This means the properties of the entity/relation are processed internally using
-  reactive technologies (for example an entity of type AND outputs the result of a boolean and operation of the
-  two boolean inputs)
+- [x] The entity system is a network of entities which are connected with semantic and directional
+  relations in a graph
+- [x] The entity system is a network of properties which are connected with connectors in order to
+  control the data flow from one entity to another
+- [x] The underlying data store technology is a graph database which is embedded in the application
+- [x] The entities/relations are reactive. This means the properties of the entity/relation are
+  processed internally using reactive technologies (for example an entity of type AND outputs the
+  result of a boolean and operation of the two boolean inputs)
 
 ## Stories
 
@@ -61,8 +62,14 @@ The minimal valuable product (MVP) contains the following goals:
 - [ ] As a flow designer I can define components which can be used as building block for entities using JavaScript
 - [ ] As a flow designer I can create entities with properties using JavaScript
 - [ ] As a flow designer I can connect and disconnect two properties which data flows from one to the other using JavaScript
-- [ ] As a flow designer I can create an entity of type boolean constant
-- [ ] As a flow designer I can create an entity of type AND-operation which outputs the AND-operation of two inputs
+- [ ] As a flow designer I can create flows using JavaScript
+
+#### GraphQL
+
+- [ ] As a flow designer I can define components which can be used as building block for entities using a GraphQL interface
+- [ ] As a flow designer I can create entities with properties using a GraphQL interface
+- [ ] As a flow designer I can connect and disconnect two properties which data flows from one to the other using a GraphQL interface
+- [ ] As a flow designer I can create flows using a GraphQL interface
 
 ## Library Integrations
 
@@ -72,8 +79,11 @@ goals:
 - [x] Dependency Injection (waiter_di)
 - [x] Embedded Graph Database (indradb)
 - [x] Reactive Streams (bidule)
+- [x] Logging
+- [ ] Websockets Server
+- [ ] HTTP Server
+- [ ] GraphQL Server
 - [ ] JavaScript Runtime (deno)
-- [ ] Logging
 
 Further libraries might be of interest (asset management, remote procedure calls, ...) but these four libraries are the
 essential ones.
@@ -89,11 +99,12 @@ essential ones.
 - [x] Source Code Format (`cargo fmt`)
 - [ ] Reference Documentation (rst, wiki)
 - [x] Logging Framework
-- [ ] GitHub Actions
+- [x] GitHub Actions
   - [x] Compile
   - [x] Run tests
   - [x] Generate Code Documentation
-  - [x] Create GitHub Release
+  - [x] Create GitHub Release by Tag
+- [ ] Packaging
   - [ ] Create snap package
 
 ## Implementation
@@ -103,18 +114,14 @@ essential ones.
 #### Base Models (Serializable)
 
 - [x] `Component`
-  - [x] Serializable
 - [x] `EntityType`
-  - [x] Serializable
 - [x] `EntityInstance`
-  - [x] Serializable
   - [x] From Vertex Properties
 - [x] `RelationInstance`
-  - [x] Serializable
   - [x] From Edge Properties
-- [ ] `Flow`
-  - [ ] Serializable
-  - [ ] List of entity_
+- [x] `Flow`
+  - [x] List of entity instances
+  - [x] List of relation instances
 
 #### Reactive Models (Non-Serializable, Managed by a Registry)
 
@@ -137,6 +144,9 @@ essential ones.
   - [x] Construct Properties
   - [x] Typed Getters
   - [x] Setter
+- [x] `ReactiveFlow`
+  - [x] List of `ReactiveEntityInstance`
+  - [x] List of `ReactiveRelationInstance`
 
 ### Behaviours
 
@@ -186,23 +196,31 @@ The reactive behaviour implements the behaviour of a type. For example the AND
 
 - [x] `Component Manager`
 - [x] `EntityTypeManager`
-- [x] `EntityInstanceVertexManager`
+- [x] `EntityVertexManager`
 - [x] `EntityInstanceManager`
 - [x] `ReactiveEntityInstanceManager`
 - [x] `RelationTypeManager`
-- [ ] `RelationInstanceManager`
-- [ ] `ReactiveRelationInstanceManager`
-- [ ] `FlowManager`
-  - [ ] List of entity_ids
-  - [ ] List of relation_ids
-  - [ ] Register Entity Instance for Flow
-  - [ ] Register Relation Instance for Flow
-  - [ ] Import / Export
-    - [ ] Full exports of all entity instances and relation instances
+- [x] `RelationEdgeManager`
+- [x] `RelationInstanceManager`
+- [x] `ReactiveRelationInstanceManager`
+  - [x] Resolves which behaviour(s) should be applied on an entity
+  - [x] Delegation to Registry
+- [x] `ReactiveEntityManager` delegates to `EntityBehaviourManager`
+- [x] `ReactiveRelationManager` delegates to `RelationBehaviourManager`
+- [x] `EntityBehaviourManager` delegates to `EntityBehaviourRegistries`
+- [x] `RelationBehaviourManager` delegates to `RelationBehaviourRegistries`
+- [x] `EntityBehaviourRegistry`
+- [x] `RelationBehaviourRegistry`
+- [x] `EntityBehaviourFactory`
+- [x] `RelationBehaviourFactory`
+- [x] `EntityBehaviour`
+- [x] `RelationBehaviour`
+- [x] `FlowManager`
+- [x] `ReactiveFlowManager`
 
 ### Service Layer Implementations
 
-- [x] `ComponentManager`
+- [x] `ComponentManagerImpl`
   - [x] Store references of `Component`
   - [x] Has Component by Name
   - [x] Register Component
@@ -211,7 +229,8 @@ The reactive behaviour implements the behaviour of a type. For example the AND
   - [x] Delete Component By Name
   - [x] Export Component To JSON File
   - [x] Import Component From JSON File
-- [x] `EntityTypeManager`
+  - [x] Unit Tests
+- [x] `EntityTypeManagerImpl`
   - [x] Store references of `EntityType`
   - [x] Has Entity Type by Name
   - [x] Register Entity Type
@@ -221,7 +240,19 @@ The reactive behaviour implements the behaviour of a type. For example the AND
   - [x] Delete Entity Type By Name
   - [x] Export Entity Type To JSON File
   - [x] Import Entity Type From JSON File
-- [x] `EntityInstanceVertexManager`
+  - [x] Unit Tests
+- [x] `RelationTypeManagerImpl`
+  - [x] Store references of `RelationType`
+  - [x] Has Relation Type by Name
+  - [x] Register Relation Type
+    - [x] Expand Effective Properties From All Components (merge properties with the properties provided by the components)
+  - [x] Create Relation Type
+  - [x] Get Relation Type by Name
+  - [x] Delete Relation Type By Name
+  - [x] Export Relation Type To JSON File
+  - [x] Import Relation Type From JSON File
+  - [x] Unit Tests
+- [x] `EntityVertexManagerImpl`
   - [x] Has Vertex by UUID
   - [x] Get Vertex by UUID
   - [x] Get Vertex Properties by UUID
@@ -230,64 +261,126 @@ The reactive behaviour implements the behaviour of a type. For example the AND
     - [x] Check if id exists in Datastore (must not exist)
     - [x] Create Vertex Properties
   - [x] Delete Vertex
-- [x] `EntityInstanceManager`
+  - [x] Unit Tests
+- [x] `RelationEdgeManagerImpl`
+  - [x] Has Edge by Outbound-UUID, type-name and Inbound-UUID
+  - [x] Get Edge by Outbound-UUID, type-name and Inbound-UUID
+  - [x] Get Edge Properties by Outbound-UUID, type-name and Inbound-UUID
+  - [x] Create Edge
+  - [x] Delete Edge By Outbound-UUID, type-name and Inbound-UUID
+  - [x] Unit Tests
+- [x] `EntityInstanceManagerImpl`
   - [x] Has Entity Instance by UUID
   - [x] Get Entity Instance by UUID
   - [x] Create Entity Instance
   - [x] Create Entity Instance with UUID
   - [x] Delete Entity Instance By UUID
   - [x] Import EntityInstance from JSON
-    - [x] Check if id exists in Graph Database (must not exist)
-    - [x] Create Vertex
   - [x] Export EntityInstance to JSON
     - [x] Create EntityInstance from Vertex
-- [ ] `ReactiveEntityInstanceManager`
-  - [x] Hold references of `ReactiveEntityInstance`
+  - [x] Unit Tests
+- [x] `RelationInstanceManagerImpl`
+  - [x] Has Relation Instance by Outbound-UUID, type-name and Inbound-UUID
+  - [x] Get Relation Instance by Outbound-UUID, type-name and Inbound-UUID
+  - [x] Create Relation Instance
+  - [x] Delete Relation Instance By Outbound-UUID, type-name and Inbound-UUID
+  - [x] Import Relation Instance from JSON
+  - [x] Export Relation Instance to JSON
+  - [x] Unit Tests
+- [x] `ReactiveEntityInstanceManagerImpl`
+  - [x] Central registry of all `ReactiveEntityInstance`s
+  - [x] Create `ReactiveEntityInstance` by UUID
+  - [x] On Instantiation: Instantiate `EntityBehaviour`
+  - [x] Check if id exists in HashMap (must not exist)
+  - [x] Check if id exists in Datastore -> Manager
+  - [x] Unit Tests
+- [x] `ReactiveRelationInstanceManagerImpl`
+  - [x] Central registry of all `ReactiveRelationInstance`s
     * These are the actually "running" / "living" instances
-  - [ ] Create `ReactiveEntityInstance` by UUID
-    - [ ] Get Entity Instance by UUID from `EntityInstanceManager`
-    - [ ] On Instantiation: Instantiate `ReactiveEntityInstanceBehaviour` by TYPE
-      - [ ] ConstValue
-      - [ ] Logical Gate (AND)
-      - [ ] Arithmetic Gate (AND)
-      - [ ] Print
-  - [ ] Check if id exists in HashMap (must not exist)
-  - [ ] Check if id exists in Datastore -> Manager
-- [ ] `ReactiveRelationInstanceManager`
-  - [ ] Central registry of all `ReactiveRelationInstance`s
-    * These are the actually "running" / "living" instances
-  - [ ] Create `ReactiveRelationInstance` by UUID
-    - [ ] Get Relation Instance by UUID from `RelationInstanceManager`
+  - [x] Create `ReactiveRelationInstance` by UUID
+    - [x] Get Relation Instance by EdgeKey from `RelationInstanceManager`
     - [ ] On Instantiation: Instantiate `ReactiveRelationInstanceBehaviour` by TYPE
       - [ ] Connector
-- [ ] `ConnectorManager`
-  - [ ] Central registry of all `Connectors`s
-  - [ ] (handle_id) = connect(uuid, prop_name, uuid, prop_name)
-  - [ ] connect(`ReactiveEntityInstance`, prop_name, `ReactiveEntityInstance`, prop_name)
-  - [ ] disconnect(uuid, prop_name, uuid, prop_name)
-  - [ ] connect(`ReactiveEntityInstance`, prop_name, `ReactiveEntityInstance`, prop_name)
-  
-- [ ] `FlowManager`
-  - [ ] Map of `Flows`
-    - [ ] List of entity_ids
-    - [ ] List of relation_ids
-  - [ ] Register Entity Instance for Flow (= register UUID)
-  - [ ] Register Relation Instance for Flow (= register UUID)
-  - [ ] Export
-    - [ ] For each registered EntityInstance UUID: Load the `EntityInstance` via `EntityInstanceManager`
-    - [ ] For each registered RelationInstance UUID: Load the `RelationInstance` via `RelationInstanceManager`
-    - [ ] Construct one big JSON
-  - [ ] Import
-    - [ ] Read one big JSON
-    - [ ] For each `EntityInstance`: Create EntityInstance via `EntityInstanceManager`
-      - [ ] For each `RelationInstance`: Create EntityInstance via `RelationInstanceManager`
+  - [x] Unit Tests
+- [x] `EntityInstanceBehaviourManager`
+  - [x] Instantiate Behaviour
+  - [x] Remove Behaviour
+- [x] `RelationInstanceBehaviourManager`
+  - [x] Instantiate Behaviour
+  - [x] Remove Behaviour
+- [x] `FlowManagerImpl`
+  - [x] Create Flow: Creates entity and relation instances contained in the flow
+  - [x] Delete Flow: Deletes entity and relation instances contained in the flow
+  - [x] Import, Export
+  - [ ] Unit Tests
+- [x] `ReactiveFlowManagerImpl`
+  - [x] Map<FlowId, List<FlowId>>
+  - [x] Has
+  - [x] Get
+  - [x] Create
+  - [x] Commit
+  - [x] Delete
+  - [x] Export
+  - [x] Import
+  - [ ] Unit Tests
 
-### Constants
+### Behaviours
 
-- [ ] Math Constants https://doc.rust-lang.org/std/f64/consts/index.html
-- [ ] Environment Variables
-- [ ] Command Line Arguments
+- [ ] Implement Numeric Comparison
+- [ ] Implement String Operations
+- [ ] Implement String Gates
+- [ ] Implement String Comparison
+- [ ] Implement Timers / Cron Jobs
+- [ ] Implement Entity with Numeric Constant by name
+  - Math Constants https://doc.rust-lang.org/std/f64/consts/index.html
+- [ ] Implement Noise Generation (Procedural Textures + Terrain Generation + Particles)
+  - [ ] https://docs.rs/noise/0.7.0/noise/
+  - [ ] https://github.com/Razaekel/noise-rs
 
-### Numeric Operations
+### WebSocket
 
-- [ ] https://doc.rust-lang.org/std/primitive.f64.html
+- [ ] CR: entity types / relation types
+- [ ] CRUD: entity instances / relation instances / flows
+- [ ] Notification entity / relation / flow / property
+- [ ] https://github.com/housleyjk/ws-rs
+- [ ] https://github.com/housleyjk/ws-rs/blob/master/examples/threaded.rs
+
+### GraphQL
+
+- [ ] https://github.com/graphql-rust/juniper
+- [ ] Queries for entity instances / relation instances / flows
+- [ ] Mutations for entity instances / relation instances / flows
+
+### Command System Flow
+
+- [ ] Websocket endpoint for command input
+- [ ] Command parsing
+- [ ] Rename behaviour simple_closure (log, print, ...) to command
+- [ ] Make sure a simple_closure can have access to managers in order to get/create/update entities/relations
+- [ ] Implement a terminal in the flow editor
+
+### System Environment Flow
+
+- [ ] Implement Flow for the Environment Variables
+- [ ] Implement Flow for the Command Line Arguments
+- [ ] Implement Flow for the System / OS Constants
+
+### Beyond the Core
+
+- [ ] rust bindgen C++
+  - [ ] Bindings for Vulkan Renderer
+- [ ] models
+  - [ ] rust + glTF: https://github.com/gltf-rs/gltf
+- [ ] procedural textures
+  - [ ] Generate
+- [ ] particles
+- [ ] sound
+
+### Permission Model
+
+- [ ] Game API (JavaScript Access)
+  - [ ] Map = Flow
+  - [ ] Game Mode = Flow
+  - [ ] Game State = Flow
+  - [ ] Player = Flow
+- [ ] System = Flow
